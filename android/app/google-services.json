@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "363246296384-qbpm5972p7fmrin5g75f4li7rn2eqotm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cardgame",
+            "certificate_hash": "e98b8ff347204a9a8a3d7f3c6974423792b107a5"
+          }
+        },
+        {
           "client_id": "363246296384-gl6ar5f3sq3ajjnoqh8olmqptl6vkqur.apps.googleusercontent.com",
           "client_type": 3
         }
