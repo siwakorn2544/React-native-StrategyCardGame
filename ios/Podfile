@@ -12,6 +12,8 @@ target 'CardGame' do
     :hermes_enabled => false
   )
 
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'CardGameTests' do
     inherit! :complete
     # Pods for testing

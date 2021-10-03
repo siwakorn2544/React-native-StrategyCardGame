@@ -61,3 +61,8 @@ buck-out/
 #firebase
 db.js
 *.log
+
+#Aunth
+google-services.json
+GoogleService-Info.plist
+SHA1.txt
