@@ -9,8 +9,10 @@ import {
   View,
   Text,
   Button,
-  Image
+  Image,
+  TouchableOpacity
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 import {
   GoogleSignin,
@@ -121,19 +123,21 @@ function App ({ navigation }) {
             <View style={styles.buttonContainer}>
               {!user && <Text>You are currently logged out</Text>}
               {user && (
-                <View>
+                <View >
                   <Text>Welcome {user.displayName}</Text>
                   <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
-                  <Button
-                    onPress= { checkData_User }
-                    title="Start Game"
-                    color="green"
-                  />
-                  <Button
+                  <View>
+                    <TouchableOpacity 
+                     onPress= { checkData_User }
+                     style={styles.buttonPlay}>
+                       <Text style={styles.textinbutton}> Start Game</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                     onPress={signOut}
-                    title="LogOut"
-                    color="red">                      
-                  </Button>
+                    style={styles.buttonlogout}>
+                      <Text style={styles.textinbutton}> Log out</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )}
             </View>
@@ -157,6 +161,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'center',
+    justifyContent:'center'
   },
   buttonContainer: {
     alignSelf: 'center',
@@ -174,6 +179,29 @@ const styles = StyleSheet.create({
     width: 66,
     height: 58,
     alignSelf: "center"
+  },
+  buttonPlay:{
+    borderWidth:3,
+    borderColor:'green',
+    backgroundColor:'green',
+    borderRadius:2,
+    margin:10,
+    paddingHorizontal: 30,
+    paddingVertical: 5
+  },
+  buttonlogout:{
+    borderWidth:3,
+    borderColor:'red',
+    backgroundColor:'red',
+    borderRadius:2,
+    margin:10,
+    paddingHorizontal: 30,
+    paddingVertical: 5
+  },
+  textinbutton:{
+    color:"#FFFFFF",
+    fontWeight:'bold',
+    textAlign:'center'
   }
 });
 

@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   // SafeAreaView
   container: {
     flex: 1,
+    backgroundColor:"white"
   },
     viewbutton:{
       flex:1,
@@ -89,7 +90,8 @@ const styles = StyleSheet.create({
     },
     textinbutton:{
       color:"black",
-      fontWeight:'bold'
+      fontWeight:'bold',
+      textAlign:'center'
     }
 })
 
