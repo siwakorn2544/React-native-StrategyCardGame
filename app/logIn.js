@@ -1,18 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {dataCheck, createUser} from './database/User'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  Image,
-  TouchableOpacity
-} from 'react-native';
-import { Icon } from 'react-native-elements';
+import {SafeAreaView,StyleSheet, View, Text, Button, Image} from 'react-native';
 
 import {
   GoogleSignin,
@@ -73,17 +61,6 @@ function App ({ navigation }) {
       console.error(error);
     }
   };
-  
-  const _storeData = async () => {
-    try {
-      await AsyncStorage.setItem('logIn_User', user.uid);
-      console.log('finish setData')
-    } catch (err) {
-      // Error saving data
-      console.log(err)
-      console.log('something went wrong')
-    }
-  };
 
   const checkData_User = async () => {
     let exists = await dataCheck(user.uid);
@@ -91,8 +68,8 @@ function App ({ navigation }) {
       //create new player
       await createUser(user.uid, user.displayName); 
     }
-    await _storeData()
-    await navigation.navigate('Main');
+    // await _storeData()
+    await navigation.navigate('Main', {UID: user.uid});
   }
 
   useEffect(() => {

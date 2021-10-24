@@ -16,6 +16,29 @@ async function dataCheck(UID) {
     return agument;
 }
 
+async function _receiveDeckData(UID){
+    let decklist = [];
+    await database().ref(`/users/${UID}/Deck`)
+        .once('value')
+        .then(snapshot => {
+            decklist = snapshot.val();
+            console.log(decklist);
+        });
+    return decklist;
+}
+
+async function _receiveName(UID){
+    let PlayerName = "";
+    await database().ref(`/users/${UID}/Name`)
+        .once('value')
+        .then(snapshot =>{
+            PlayerName = snapshot.val();
+            console.log(PlayerName);
+        })
+    return PlayerName;
+}
+
+
 async function createUser(uid, name){
     let newUser = {}
 
@@ -32,4 +55,4 @@ async function createUser(uid, name){
     }
 }
 
-export { dataCheck, createUser };
+export { dataCheck, createUser, _receiveDeckData, _receiveName };
