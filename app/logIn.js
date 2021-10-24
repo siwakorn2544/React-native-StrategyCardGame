@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {dataCheck, createUser} from './database/User'
-import {SafeAreaView,StyleSheet, View, Text, Button, Image} from 'react-native';
+import {SafeAreaView,StyleSheet, View, Text, Button, Image, TouchableOpacity} from 'react-native';
 
 import {
   GoogleSignin,
