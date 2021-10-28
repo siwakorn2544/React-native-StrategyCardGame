@@ -1,8 +1,9 @@
 import React, { useState, useEffect} from 'react';
 import {_receiveDeckData, _receiveName} from './database/User'
-import { Button, SafeAreaView, StyleSheet, Text, View, Image, Alert } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, View, Image, Alert ,TouchableOpacity} from 'react-native';
 import Modal from "react-native-modal";
 import _Deck from './class/Deck';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 function Screen({route , navigation}) {
     const [myDeck, setDeck] = useState([]);
@@ -28,10 +29,22 @@ function Screen({route , navigation}) {
       }
     }
 
+    const MyXicon = () => {
+      return(
+        <Icon name="close" size={15} color="red" > </Icon>
+      )
+    }
+
+    const MyOicon = () => {
+      return(
+        <Icon name="check" size={15} color="green"> </Icon>
+      )
+    }
+
     useEffect(() => {
       _retrieveData();
     }, [])
-
+  
     useEffect(() => {
       let interval = null;
       if (matchMaking) {
@@ -52,14 +65,26 @@ function Screen({route , navigation}) {
     }, [matchMaking, cardChecking])
   
     return ( 
-        <View>
-        {/* popup หลังกด PLAY (หน้าหมุนโหลดรอผู้เล่น -> ค้นหาเจอเเล้ว -> ส่งไปหน้าเล่น) */}
+        <View style={{flex:1}}>
           <Text>
             User-{Name}: {UID}
           </Text>
-          <Button title='PLAY' onPress= { () => {setMatchMaking(true); setFinding(false);} }/>
-          <Button title='DECK' onPress={ () => navigation.navigate('Deck')}/>
-          <Button title='EXIT' onPress= { () => navigation.navigate('LogIn')}/>
+        <View style={styles.viewbutton}>
+          <View>
+              <TouchableOpacity style={styles.buttonPlay}
+              onPress= { () => {setMatchMaking(true); setFinding(false);} }
+              > 
+              <Text style={styles.textinbutton}> Play </Text> 
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonDeck}
+              onPress={() => navigation.navigate('Deck')}> 
+              <Text style={styles.textinbutton}> Deck </Text> 
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonExit}
+               onPress={() => navigation.navigate('LogIn')}> 
+              <Text style={styles.textinbutton}> Exit </Text> 
+              </TouchableOpacity>
+            </View> 
         <Modal
           isVisible={matchMaking}
         >
@@ -69,55 +94,119 @@ function Screen({route , navigation}) {
                 <View style={styles.iconText}>
                   <Text>Deck card</Text>
                 <Text>[ {cardChecking} /40]</Text>
-                  { (cardChecking != _Deck.maxDeck()) && <Text> X </Text>} 
-                  { (cardChecking == _Deck.maxDeck()) && <Text> O </Text>} 
+                {/* ทำเพิ่มเปลี่ยน Text เป็น icon X O _Deck.maxDeck() */ }
+                  { (cardChecking != _Deck.maxDeck()) && <MyXicon/>} 
+                  { (cardChecking == _Deck.maxDeck()) && <MyOicon/>} 
                 </View>
               }
-              {
-                finding && 
-                <Text>ไอคอนหมุนๆๆจนกว่าจะเจอคน</Text>
-              }
-            <View style={{flexDirection: "row"}}>
-              <Button title="cancal" onPress={ () => setMatchMaking(false)} />
-              {(cardChecking == 6) &&
-              <Button title="Find Room" onPress={ 
+            <View style={{flexDirection:"column", justifyContent:"space-evenly", alignItems:"center"}}>
+              <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false)}>
+                 <Text style={{color:"white"}}> cancal </Text>
+              </TouchableOpacity>
+              {(cardChecking == _Deck.maxDeck()) &&
+              <TouchableOpacity style={styles.findRoom} onPress={ 
                 () => navigation.navigate("MatchMaking", {
                   UID: UID,
                 })
                 } 
-              />}
+              >
+                <Text style={{color:"white"}}>
+                  Find Room
+                </Text>
+              </TouchableOpacity>
+              }
             </View>
           </View>
         </Modal>
         </View>      
-      
+      </View>
     );
 }
 
 const styles = StyleSheet.create({
-  cards: {
-    height: "25%",
-    width: "10%", 
+  // SafeAreaView
+  container: {
+    flex: 1,
+    backgroundColor:"white"
   },
-  modal: {
-    flex: 1, 
-    backgroundColor: 'white',
-    justifyContent: 'space-around', 
-    alignItems: 'center' 
-  },
-  DeckBox: {
-    // flexDirection: "row",
-    height: "69%",
-    width: "90%",
-    backgroundColor: "black"
-  },
-  iconText: {
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: 'baseline',
-  }
-})
+    viewbutton:{
+      flex:1,
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    // ปุ่ม Play
+    buttonPlay:{
+      borderWidth:3,
+      borderColor:'#0086f5',
+      backgroundColor:'#4286f5',
+      borderRadius:2,
+      margin:10,
+      paddingHorizontal: 30,
+      paddingVertical: 5
+    },
+    // ปุ่ม Deck 
+    buttonDeck:{
+      borderWidth:3,
+      borderColor:'#40D60E',
+      backgroundColor:'#84D60E',
+      borderRadius:2,
+      margin:10,
+      paddingHorizontal: 30,
+      paddingVertical: 5
+    },
+    // ปุ่ม Exit 
+    buttonExit:{
+      borderWidth:3,
+      borderColor:'#A00E0E',
+      backgroundColor:'#D60E0E',
+      borderRadius:2,
+      margin:10,
+      paddingHorizontal: 30,
+      paddingVertical: 5
+    },
+    textinbutton:{
+      color:"black",
+      fontWeight:'bold',
+      textAlign:'center'
+    },
+    cancelinPlay:{
+      backgroundColor:"#69041a",
+      borderRadius:2,
+      margin:10,
+      paddingHorizontal: 30,
+      paddingVertical: 5
+    },
+    findRoom:{
+      backgroundColor:"green",
+      borderRadius:2,
+      margin:5,
+      paddingHorizontal: 20,
+      paddingVertical: 5
+    },
+    cards: {
+      height: "25%",
+      width: "10%", 
+    },
+    modal: {
+      flex: 1, 
+      backgroundColor: 'white',
+      justifyContent: 'space-around', 
+      alignItems: 'center',
+      borderRadius:30,
+    },
+    DeckBox: {
+      // flexDirection: "row",
+      height: "69%",
+      width: "90%",
+      backgroundColor: "black"
+    },
+    iconText: {
+      paddingVertical: 15,
+      paddingHorizontal: 10,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: 'baseline',
+    },
+  });
 
 export default Screen;
