@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { database } from './database/db';
 import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
-function Screen() {
+function Screen({navigation}) {
     const [Deck, setDeck] = useState([]);
     const [Name, setName] = useState("test");
     return (
