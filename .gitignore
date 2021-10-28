@@ -66,3 +66,4 @@ db.js
 google-services.json
 GoogleService-Info.plist
 SHA1.txt
+app/test.js
