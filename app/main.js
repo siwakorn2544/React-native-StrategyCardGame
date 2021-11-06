@@ -99,7 +99,7 @@ function Screen({route , navigation}) {
                
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonDeck}
-              onPress={() => navigation.navigate('Deck')}> 
+              onPress={() => navigation.navigate('Deck', {DECK: myDeck})}> 
               <Text style={styles.textinbutton}> Deck </Text><MYDicon/>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonExit}

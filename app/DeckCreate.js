@@ -33,7 +33,8 @@ function Screen({route, navigation}) {
     }
 
     useEffect(() => {
-      setDeck(route.params.DECK);
+      console.log(route.params.Deck)
+      setDeck(route.params.Deck);
       _retrieveCardLists()
     }
     ,[])
