@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {dataCheck, createUser} from './database/User'
-import {SafeAreaView,StyleSheet, View, Text, Button, Image, TouchableOpacity} from 'react-native';
+import {SafeAreaView,StyleSheet, View, Text, Button, Image, TouchableOpacity, ImageBackground} from 'react-native';
 
 import {
   GoogleSignin,
   GoogleSigninButton,
   statusCodes,
 } from '@react-native-community/google-signin';
-
+// import Icon from 'react-native-vector-icons/AntDesign';
 import auth from '@react-native-firebase/auth';
 
 
@@ -82,44 +82,51 @@ function App ({ navigation }) {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
+  
+  // test
+  // const imageURL = {uri:"https://c.tenor.com/wOCOTBGZJyEAAAAC/chikku-neesan-girl-hit-wall.gif"}
 
   return (
     <View style={styles.bg}>
-      <SafeAreaView>
+      {/* <Image style={styles.imageBG} source={imageURL} resizeMode="cover"></Image> */}
+      {/* <ImageBackground source={imageURL} style={styles.imageBG}> */}
+      <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
           <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              {!loggedIn && (
-                <GoogleSigninButton
-                  style={{width: 192, height: 48}}
-                  size={GoogleSigninButton.Size.Wide}
-                  color={GoogleSigninButton.Color.Dark}
-                  onPress={_signIn}
-                />
-              )}
-            </View>            
-            <View style={styles.buttonContainer}>
-              {!user && <Text>You are currently logged out</Text>}
-              {user && (
-                <View >
-                  <Text>Welcome {user.displayName}</Text>
-                  <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
-                  <View>
-                    <TouchableOpacity 
-                     onPress= { checkData_User }
-                     style={styles.buttonPlay}>
-                       <Text style={styles.textinbutton}> Start Game</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                    onPress={signOut}
-                    style={styles.buttonlogout}>
-                      <Text style={styles.textinbutton}> Log out</Text>
-                    </TouchableOpacity>
+            <View >
+              <View style={styles.sectionContainer}>
+                {!loggedIn && (
+                  <GoogleSigninButton
+                    style={{width: 192, height: 48}}
+                    size={GoogleSigninButton.Size.Wide}
+                    color={GoogleSigninButton.Color.Dark}
+                    onPress={_signIn}
+                  />
+                )}
+              </View>            
+              <View style={styles.buttonContainer}>
+                {!user && <Text style={{color:"white"}}>You are currently logged out</Text>}
+                {user && (
+                  <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
+                       <Text style={{backgroundColor:'white',opacity:0.7,borderRadius:10}} >Welcome {user.displayName}</Text>
+                    <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
+                    <View>
+                      <TouchableOpacity 
+                      onPress= { checkData_User }
+                      style={styles.buttonPlay}>
+                        <Text style={styles.textinbutton}> Start Game</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                      onPress={signOut}
+                      style={styles.buttonlogout}>
+                        <Text style={styles.textinbutton}> Log out</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              )}
+                )}
+              </View>
             </View>
          </View>
-      </SafeAreaView>
+         </ImageBackground>
     </View>
   );
 };
@@ -127,18 +134,25 @@ function App ({ navigation }) {
 const styles = StyleSheet.create({
   bg: {
     flex: 1,
-    backgroundColor: 'white',
   },
   body: {
-    backgroundColor: 'white',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent:'flex-end',  
+    alignSelf: 'center',
+  },
+  imageBG:{
+    flex:1, 
   },
   sectionContainer: {
+    flex:1,
+    flexDirection: 'column',
     marginTop: 32,
     paddingHorizontal: 24,
-    flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     alignSelf: 'center',
-    justifyContent:'center'
+    justifyContent:'center',
+    // backgroundColor: 'red',
   },
   buttonContainer: {
     alignSelf: 'center',
