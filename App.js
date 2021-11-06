@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Mainapp from './app/Mainapp'
+import MainApp from './app/MainApp'
 
 function App() {
   return (
     
-    <Mainapp></Mainapp>
+    <MainApp></MainApp>
 
   );
 }
