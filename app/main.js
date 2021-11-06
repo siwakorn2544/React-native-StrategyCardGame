@@ -1,9 +1,12 @@
 import React, { useState, useEffect} from 'react';
 import {_receiveDeckData, _receiveName} from './database/User'
-import { Button, SafeAreaView, StyleSheet, Text, View, Image, Alert ,TouchableOpacity} from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, View, Image, ImageBackground, Alert ,TouchableOpacity} from 'react-native';
 import Modal from "react-native-modal";
 import _Deck from './class/Deck';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Icon2 from 'react-native-vector-icons/FontAwesome5'
+import Icon3 from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon4 from 'react-native-vector-icons/MaterialIcons'
 
 function Screen({route , navigation}) {
     const [myDeck, setDeck] = useState([]);
@@ -41,6 +44,23 @@ function Screen({route , navigation}) {
       )
     }
 
+
+    const MyFicon = () => {
+      return(
+        <Icon2 name="gamepad" size={25} color="black"> </Icon2>
+      )
+    }
+    
+    const MYDicon = () => {
+      return(
+        <Icon3 name="cards" size={25} color="black"> </Icon3>
+      )
+    }
+    const MYEicon = () => {
+      return(
+        <Icon4 name="keyboard-return" size={25} color="black"> </Icon4>
+      )
+    }
     useEffect(() => {
       _retrieveData();
     }, [])
@@ -66,23 +86,25 @@ function Screen({route , navigation}) {
   
     return ( 
         <View style={{flex:1}}>
-          <Text>
-            User-{Name}: {UID}
-          </Text>
+          <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
+            <View style={{flex:0.4, justifyContent:'center',alignItems:'center'}}>
+              <Text style={{fontSize:20, fontWeight: 'bold',color:'white'}}>Welcome To Defender of the Legends</Text>
+            </View>
         <View style={styles.viewbutton}>
           <View>
               <TouchableOpacity style={styles.buttonPlay}
               onPress= { () => {setMatchMaking(true); setFinding(false);} }
               > 
-              <Text style={styles.textinbutton}> Play </Text> 
+              <Text style={styles.textinbutton}> Play </Text><MyFicon/> 
+               
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonDeck}
               onPress={() => navigation.navigate('Deck')}> 
-              <Text style={styles.textinbutton}> Deck </Text> 
+              <Text style={styles.textinbutton}> Deck </Text><MYDicon/>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonExit}
                onPress={() => navigation.navigate('LogIn')}> 
-              <Text style={styles.textinbutton}> Exit </Text> 
+              <Text style={styles.textinbutton}> Exit </Text><MYEicon/>
               </TouchableOpacity>
             </View> 
         <Modal
@@ -118,19 +140,23 @@ function Screen({route , navigation}) {
             </View>
           </View>
         </Modal>
-        </View>      
+        </View>     
+        </ImageBackground> 
       </View>
     );
 }
 
 const styles = StyleSheet.create({
   // SafeAreaView
-  container: {
-    flex: 1,
-    backgroundColor:"white"
+  // container: {
+  //   flex: 1,
+  //   backgroundColor:"white"
+  // },
+  imageBG:{
+    flex:1, 
   },
     viewbutton:{
-      flex:1,
+      flex:2,
       alignItems: 'center',
       justifyContent: 'center'
     },
