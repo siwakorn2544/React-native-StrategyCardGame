@@ -61,6 +61,8 @@ buck-out/
 #firebase
 db.js
 *.log
+functions/
+.firebaserc
 
 #Aunth
 google-services.json
