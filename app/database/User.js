@@ -1,4 +1,4 @@
-import { database } from './db';
+import { database, firestore } from './db';
 
 async function dataCheck(UID) {
     let agument = false;
@@ -55,4 +55,12 @@ async function createUser(uid, name){
     }
 }
 
-export { dataCheck, createUser, _receiveDeckData, _receiveName };
+async function getCardLists(){
+    const data = await firestore().collection('CardList').get();
+    const cardList = data.docs.map((data, index) => {
+        return { imgURL : data._data.imgURL, id: data.id};
+    });
+    return cardList;
+}
+
+export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists };

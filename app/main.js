@@ -124,7 +124,7 @@ function Screen({route , navigation}) {
             <View style={{flexDirection:"column", justifyContent:"space-evenly", alignItems:"center"}}>
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false)}>
                  <Text style={{color:"white"}}> cancal </Text>
-              </TouchableOpacity>
+              </TouchableOpacity>   
               {(cardChecking == _Deck.maxDeck()) &&
               <TouchableOpacity style={styles.findRoom} onPress={ 
                 () => navigation.navigate("MatchMaking", {

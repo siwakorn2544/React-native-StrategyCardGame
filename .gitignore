@@ -61,11 +61,18 @@ buck-out/
 #firebase
 db.js
 *.log
+functions/
+.firebaserc
 
 #Aunth
 google-services.json
 GoogleService-Info.plist
 SHA1.txt
+
+
+app/test.js
+
+
 package.json
 package-lock.json
 ios/Podfile
@@ -90,3 +97,5 @@ android/app/src/main/assets/fonts/EvilIcons.ttf
 android/app/src/main/assets/fonts/Entypo.ttf
 android/app/src/main/assets/fonts/AntDesign.ttf
 *.json
+app/toupload.js
+functions/
