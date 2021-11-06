@@ -95,3 +95,5 @@ android/app/src/main/assets/fonts/EvilIcons.ttf
 android/app/src/main/assets/fonts/Entypo.ttf
 android/app/src/main/assets/fonts/AntDesign.ttf
 *.json
+app/toupload.js
+functions/

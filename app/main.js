@@ -77,7 +77,7 @@ function Screen({route , navigation}) {
               <Text style={styles.textinbutton}> Play </Text> 
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonDeck}
-              onPress={() => navigation.navigate('Deck')}> 
+              onPress={() => navigation.navigate('Deck', {DECK: myDeck})}> 
               <Text style={styles.textinbutton}> Deck </Text> 
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonExit}
@@ -102,7 +102,7 @@ function Screen({route , navigation}) {
             <View style={{flexDirection:"column", justifyContent:"space-evenly", alignItems:"center"}}>
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false)}>
                  <Text style={{color:"white"}}> cancal </Text>
-              </TouchableOpacity>
+              </TouchableOpacity>   
               {(cardChecking == _Deck.maxDeck()) &&
               <TouchableOpacity style={styles.findRoom} onPress={ 
                 () => navigation.navigate("MatchMaking", {
