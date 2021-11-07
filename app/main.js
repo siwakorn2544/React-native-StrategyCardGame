@@ -109,6 +109,7 @@ function Screen({route , navigation}) {
             </View> 
         <Modal
           isVisible={matchMaking}
+          backdropOpacity={0.1}
         >
           <View style={styles.modal}>
             <Text>Data Checking</Text>
@@ -139,6 +140,7 @@ function Screen({route , navigation}) {
               }
             </View>
           </View>
+        
         </Modal>
         </View>     
         </ImageBackground> 
