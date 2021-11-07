@@ -63,4 +63,16 @@ async function getCardLists(){
     return cardList;
 }
 
-export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists };
+async function getCardData(deck){
+    let setDeck = [...new Set(deck)]
+    let data = [];
+    for (let i = 0; i < setDeck.length; i++) {
+        const element = await firestore().collection('CardList').doc(setDeck[i]).get();
+        const count = deck.filter(x => x == setDeck[i]).length;
+        data.push({id: element.id, imgURL: element._data.imgURL, count: count})
+    }
+    console.log(data);
+    return data;
+}
+
+export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData };
