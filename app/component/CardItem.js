@@ -29,7 +29,6 @@ function CardItem(props){
             Animated.spring(
                 pan, { toValue:{x:0, y:0},useNativeDriver: false }
             ).start();
-            
         },
     }); //step02
 
@@ -63,7 +62,7 @@ function CardItem(props){
             style={[pan.getLayout(), styles.cardAnimate]}
             {...panResponder.panHandlers}
         >   
-        <TouchableOpacity onPress={showEnlargeImage}>
+        <TouchableOpacity onLongPress={showEnlargeImage}>
             <Image style={styles.card} source={{uri: (img != "") ? img : 'https://picsum.photos/800/1200.jpg'}} />
         </TouchableOpacity> 
         </Animated.View>

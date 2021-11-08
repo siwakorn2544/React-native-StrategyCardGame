@@ -15,7 +15,7 @@ function Screen({route , navigation}) {
     const [cardChecking, setCardChecking] = useState(0);
     const [matchMaking, setMatchMaking] = useState(false);
     const [finding, setFinding] = useState(false);
-
+    // const [imgUrl,setImg] = useState("");
     const _retrieveData = async () => {
       try {
         //GET DATA
@@ -87,29 +87,33 @@ function Screen({route , navigation}) {
     return ( 
         <View style={{flex:1}}>
           <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
-            <View style={{flex:0.4, justifyContent:'center',alignItems:'center'}}>
+            <View style={{flex:0.4, justifyContent:'center',alignItems:'center',backgroundColor:'rgba(84, 0, 0, 0.5)'}}>
               <Text style={{fontSize:20, fontWeight: 'bold',color:'white'}}>Welcome To Defender of the Legends</Text>
             </View>
+            {/* <View style={{backgroundColor:"gray", marginTop:10, marginBottom:10,borderRadius:30}}>
+                            <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
+            </View> จะเพิ่มรูปอะทำไม่เป็นครับ */}
         <View style={styles.viewbutton}>
           <View>
               <TouchableOpacity style={styles.buttonPlay}
               onPress= { () => {setMatchMaking(true); setFinding(false);} }
               > 
-              <Text style={styles.textinbutton}> Play </Text><MyFicon/> 
-               
+              
+              <Text style={styles.textinbutton}><MyFicon/>Play</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonDeck}
-              onPress={() => navigation.navigate('Deck', {DECK: myDeck})}> 
-              <Text style={styles.textinbutton}> Deck </Text><MYDicon/>
+              onPress={() => navigation.navigate('DeckC', {DECK: myDeck})}> 
+              <Text style={styles.textinbutton}><MYDicon/>Deck</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonExit}
                onPress={() => navigation.navigate('LogIn')}> 
-              <Text style={styles.textinbutton}> Exit </Text><MYEicon/>
+              <Text style={styles.textinbutton}><MYEicon/>Exit</Text>
               </TouchableOpacity>
             </View> 
         <Modal
           isVisible={matchMaking}
-          backdropOpacity={0.1}
+          backdropOpacity={0.5}
+          style={{flex:1, justifyContent:'center',alignItems:'center'}}
         >
           <View style={styles.modal}>
             <Text>Data Checking</Text>
@@ -122,7 +126,8 @@ function Screen({route , navigation}) {
                   { (cardChecking == _Deck.maxDeck()) && <MyOicon/>} 
                 </View>
               }
-            <View style={{flexDirection:"column", justifyContent:"space-evenly", alignItems:"center"}}>
+          </View>
+          <View style={{flexDirection:"column", justifyContent:"space-evenly", alignItems:"center"}}>
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false)}>
                  <Text style={{color:"white"}}> cancal </Text>
               </TouchableOpacity>   
@@ -139,8 +144,6 @@ function Screen({route , navigation}) {
               </TouchableOpacity>
               }
             </View>
-          </View>
-        
         </Modal>
         </View>     
         </ImageBackground> 
@@ -158,9 +161,9 @@ const styles = StyleSheet.create({
     flex:1, 
   },
     viewbutton:{
-      flex:2,
+      flex:1,
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
     },
     // ปุ่ม Play
     buttonPlay:{
@@ -169,8 +172,8 @@ const styles = StyleSheet.create({
       backgroundColor:'#4286f5',
       borderRadius:2,
       margin:10,
-      paddingHorizontal: 30,
-      paddingVertical: 5
+      paddingHorizontal: 200,
+      paddingVertical: 10,
     },
     // ปุ่ม Deck 
     buttonDeck:{
@@ -179,8 +182,8 @@ const styles = StyleSheet.create({
       backgroundColor:'#84D60E',
       borderRadius:2,
       margin:10,
-      paddingHorizontal: 30,
-      paddingVertical: 5
+      paddingHorizontal: 200,
+      paddingVertical: 10
     },
     // ปุ่ม Exit 
     buttonExit:{
@@ -189,8 +192,8 @@ const styles = StyleSheet.create({
       backgroundColor:'#D60E0E',
       borderRadius:2,
       margin:10,
-      paddingHorizontal: 30,
-      paddingVertical: 5
+      paddingHorizontal: 200,
+      paddingVertical: 10
     },
     textinbutton:{
       color:"black",
@@ -216,11 +219,12 @@ const styles = StyleSheet.create({
       width: "10%", 
     },
     modal: {
-      flex: 1, 
       backgroundColor: 'white',
       justifyContent: 'space-around', 
       alignItems: 'center',
       borderRadius:30,
+      paddingHorizontal:30,
+      paddingVertical:20
     },
     DeckBox: {
       // flexDirection: "row",
@@ -234,6 +238,13 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: 'baseline',
+    },
+    iconUser: {
+      margin: 15,
+      width: 66,
+      height: 58,
+      alignSelf: "center",
+      backgroundColor:"white",
     },
   });
 

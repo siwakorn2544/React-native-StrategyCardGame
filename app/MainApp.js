@@ -20,7 +20,7 @@ function MyApp() {
       >
         <Stack.Screen name="LogIn" component={LogIn} />
         <Stack.Screen name="Main" component={Main} />
-        <Stack.Screen name="Deck" component={DeckCreate} />
+        <Stack.Screen name="DeckC" component={DeckCreate} />
         <Stack.Screen name="MatchMaking" component={MatchMaking} />
         <Stack.Screen name="PlayRoom" component={PlayRoom} />
       </Stack.Navigator>
