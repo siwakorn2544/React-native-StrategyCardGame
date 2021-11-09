@@ -90,7 +90,11 @@ function Screen({route, navigation}) {
           onLayout = {(event) => setDeckZoneLocations(event)} 
           style={styles.selectDeck}>
             <View style={{flex: 0.1, backgroundColor: "white"}} >
-                  <Text>Hello</Text>
+                <TouchableOpacity  
+                  onPress={() => navigation.navigate('Main')}
+                >
+                  <Text>back</Text>
+                </TouchableOpacity>
               </View>
             <View style={{flex: 0.7, backgroundColor: "white"}}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >

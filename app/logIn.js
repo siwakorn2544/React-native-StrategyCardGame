@@ -69,7 +69,7 @@ function App ({ navigation }) {
       await createUser(user.uid, user.displayName); 
     }
     // await _storeData()
-    await navigation.navigate('Main', {UID: user.uid});
+    await navigation.navigate('Main', {UID: user.uid, image: user.photoURL});
   }
 
   useEffect(() => {

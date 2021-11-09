@@ -15,7 +15,7 @@ function Screen({route , navigation}) {
     const [cardChecking, setCardChecking] = useState(0);
     const [matchMaking, setMatchMaking] = useState(false);
     const [finding, setFinding] = useState(false);
-    // const [imgUrl,setImg] = useState("");
+    const [imgUrl,setImg] = useState("");
     const _retrieveData = async () => {
       try {
         //GET DATA
@@ -26,12 +26,16 @@ function Screen({route , navigation}) {
         setUID(value);
         setName(name);
         setDeck(deck);
+        
       } catch (error) {
         // Error retrieving data
         console.log('error')
       }
+      setImg(route.params.image)
     }
 
+    
+  
     const MyXicon = () => {
       return(
         <Icon name="close" size={15} color="red" > </Icon>
@@ -87,12 +91,18 @@ function Screen({route , navigation}) {
     return ( 
         <View style={{flex:1}}>
           <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
-            <View style={{flex:0.4, justifyContent:'center',alignItems:'center',backgroundColor:'rgba(84, 0, 0, 0.5)'}}>
-              <Text style={{fontSize:20, fontWeight: 'bold',color:'white'}}>Welcome To Defender of the Legends</Text>
+            <View style={{position:"absolute",justifyContent:'center',alignItems:'center',left:30}}>
+                <View style={{position:"relative",backgroundColor:"gray", marginTop:10, marginBottom:10,borderRadius:30}}>
+                      <Image source={{uri:(imgUrl != "") ? imgUrl : 'https://picsum.photos/800/1200.jpg'}} style={styles.iconUser}/>
+                </View>
+                <View style={{position:"relative"}}>
+                  <Text> {Name} </Text>
+                </View>
             </View>
-            {/* <View style={{backgroundColor:"gray", marginTop:10, marginBottom:10,borderRadius:30}}>
-                            <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
-            </View> จะเพิ่มรูปอะทำไม่เป็นครับ */}
+            <View style={{flex:0.5,flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'rgba(84, 0, 0, 0.5)'}}>
+              <Text style={{fontSize:20, fontWeight: 'bold',color:'white'}}>Defender of the Legends</Text>
+            </View>
+
         <View style={styles.viewbutton}>
           <View>
               <TouchableOpacity style={styles.buttonPlay}
