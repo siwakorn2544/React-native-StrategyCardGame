@@ -89,7 +89,14 @@ function Screen({route, navigation}) {
         <View
           onLayout = {(event) => setDeckZoneLocations(event)} 
           style={styles.selectDeck}>
-            <View style={{flex: 0.8, backgroundColor: "white"}}>
+            <View style={{flex: 0.1, backgroundColor: "white"}} >
+                <TouchableOpacity  
+                  onPress={() => navigation.navigate('Main')}
+                >
+                  <Text>back</Text>
+                </TouchableOpacity>
+              </View>
+            <View style={{flex: 0.7, backgroundColor: "white"}}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
               <FlatList
                 data={cardInDeck}
@@ -99,9 +106,9 @@ function Screen({route, navigation}) {
             </ScrollView >
             </View>
             <View style={styles.boxItem}>
-              <View style={{flex: 1, alignItems: "center"}}>
-                <Text>
-                  { cardCount } | 40
+              <View style={{flex: 1, alignItems: "center" ,justifyContent:"center",flexDirection:'column-reverse'}}>
+                <Text >
+                  { cardCount } / 40
                 </Text>
                 <TouchableOpacity style={styles.saveButton} 
                   onPress={saveDeck}
@@ -146,9 +153,13 @@ const styles = StyleSheet.create({
   saveButton: {
     height: 40,
     width: 100,
-    backgroundColor: "blue",
+    backgroundColor: "rgba(185, 219, 0, 0.8)",
     margin: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+    justifyContent:'center',
+    alignItems:'center',
+    borderTopLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   boxItem: {
     flex: 0.2, 

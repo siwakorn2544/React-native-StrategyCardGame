@@ -69,7 +69,7 @@ function App ({ navigation }) {
       await createUser(user.uid, user.displayName); 
     }
     // await _storeData()
-    await navigation.navigate('Main', {UID: user.uid});
+    await navigation.navigate('Main', {UID: user.uid, image: user.photoURL});
   }
 
   useEffect(() => {
@@ -83,8 +83,6 @@ function App ({ navigation }) {
     return subscriber; // unsubscribe on unmount
   }, []);
   
-  // test
-  // const imageURL = {uri:"https://c.tenor.com/wOCOTBGZJyEAAAAC/chikku-neesan-girl-hit-wall.gif"}
 
   return (
     <View style={styles.bg}>
@@ -104,11 +102,15 @@ function App ({ navigation }) {
                 )}
               </View>            
               <View style={styles.buttonContainer}>
-                {!user && <Text style={{color:"white"}}>You are currently logged out</Text>}
+                {!user}
                 {user && (
                   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
-                       <Text style={{backgroundColor:'white',opacity:0.7,borderRadius:10}} >Welcome {user.displayName}</Text>
-                    <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
+                       <Text style={{backgroundColor:'rgba(71, 66, 66, 0.5)',fontSize:20,borderRadius:10}} >Welcome {user.displayName}</Text>
+                          
+                          <View style={{backgroundColor:"gray", marginTop:10, marginBottom:10,borderRadius:30}}>
+                            <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
+                          </View>
+                  
                     <View>
                       <TouchableOpacity 
                       onPress= { checkData_User }
@@ -169,7 +171,8 @@ const styles = StyleSheet.create({
     margin: 15,
     width: 66,
     height: 58,
-    alignSelf: "center"
+    alignSelf: "center",
+    backgroundColor:"white",
   },
   buttonPlay:{
     borderWidth:3,
