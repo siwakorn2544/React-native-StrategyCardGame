@@ -15,27 +15,28 @@ function Screen({route , navigation}) {
     const [cardChecking, setCardChecking] = useState(0);
     const [matchMaking, setMatchMaking] = useState(false);
     const [finding, setFinding] = useState(false);
-    const [imgUrl,setImg] = useState("");
+    const [imgUrl, setImg] = useState("");
     const _retrieveData = async () => {
       try {
         //GET DATA
         const value = route.params.UID;
+        const image = route.params.image
         const name = await _receiveName(value);
         const deck = await _receiveDeckData(value);
         //SET DATA
         setUID(value);
         setName(name);
         setDeck(deck);
+        setImg(image);
         
+        console.log(image, name, deck);
       } catch (error) {
         // Error retrieving data
         console.log('error')
       }
-      setImg(route.params.image)
+      
     }
 
-    
-  
     const MyXicon = () => {
       return(
         <Icon name="close" size={15} color="red" > </Icon>
@@ -112,7 +113,7 @@ function Screen({route , navigation}) {
               <Text style={styles.textinbutton}><MyFicon/>Play</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonDeck}
-              onPress={() => navigation.navigate('DeckC', {DECK: myDeck})}> 
+              onPress={() => navigation.navigate('DeckC', {UID: UID ,DECK: myDeck})}> 
               <Text style={styles.textinbutton}><MYDicon/>Deck</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonExit}
