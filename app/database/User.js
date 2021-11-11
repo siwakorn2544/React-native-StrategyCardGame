@@ -92,4 +92,15 @@ async function _saveDataDeck(uid, deck){
     } 
 }
 
-export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData, _saveDataDeck };
+async function _receiveGameData(roomID) {
+    let room = [];
+    await database().ref(`/PlayRoom/${roomID}`)
+        .once('value')
+        .then(snapshot =>{
+            room = snapshot.val();
+            console.log(room);
+        })
+    return room;
+}
+
+export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData, _saveDataDeck, _receiveGameData };

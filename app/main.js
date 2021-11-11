@@ -142,7 +142,7 @@ function Screen({route , navigation}) {
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false)}>
                  <Text style={{color:"white"}}> cancal </Text>
               </TouchableOpacity>
-              {(cardChecking == _Deck.maxDeck()) &&
+              {(cardChecking >= _Deck.maxDeck()) &&
               <TouchableOpacity style={styles.findRoom} onPress={ 
                 () => navigation.navigate("MatchMaking", {
                   UID: UID,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Text, View, StyleSheet } from "react-native";
 import { _receiveGameData } from "./database/User";
+import { database, firestore } from './database/db';
 
 
 function PlayRoom({route , navigation}){
@@ -25,18 +26,17 @@ function PlayRoom({route , navigation}){
 
     const drawCard =  async(i) => {
         for (let index = 0; index < i; index++) {
-            setTimeout(()=>{
+            //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
                 let todraw = new Monster(...Player01.deck[0]);
                 Player01.hand.push(todraw);
                 Player01.deck.shift();  
-            }, 200 )          
         }
         await _asynsPlayer(route.params.UID);
     }
 
     const preparetation = async () => {
         await _setDataGame(route.params.roomID);
-        await drawCard(3);
+        // await drawCard(3);
     }
 
     database()
@@ -73,14 +73,9 @@ function PlayRoom({route , navigation}){
 
     return(
     <View>
-        {
-        Player01.map((val) => {
-            return (
-            <Text>
-                {val}
-            </Text>
-            )
-        })}
+        <Text>
+            a
+        </Text>
     </View>
     )
 }
