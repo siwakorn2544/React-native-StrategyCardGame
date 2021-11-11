@@ -107,7 +107,7 @@ function App ({ navigation }) {
                   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
                        <Text style={{backgroundColor:'rgba(71, 66, 66, 0.5)',fontSize:20,borderRadius:10}} >Welcome {user.displayName}</Text>
                           
-                          <View style={{backgroundColor:"gray", marginTop:10, marginBottom:10,borderRadius:30}}>
+                          <View style={{backgroundColor:"black", marginVertical: 10, borderRadius: 10, width: 90, height: 85}}>
                             <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
                           </View>
                   

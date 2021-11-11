@@ -12,8 +12,13 @@ function MatchMaking({route, navigation}){
     await database().ref(`/Queue`).child(route.params.UID).set("");
   }
 
+  const subscibeQueue = async () => {
+    
+  }
+
   useEffect( ()=> {
-    addData()
+    addData();
+    subscibeQueue();
   },[])
 
   return (

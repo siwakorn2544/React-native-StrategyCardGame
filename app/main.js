@@ -29,7 +29,7 @@ function Screen({route , navigation}) {
         setDeck(deck);
         setImg(image);
         
-        console.log(image, name, deck);
+        // console.log(image, name, deck);
       } catch (error) {
         // Error retrieving data
         console.log('error')
@@ -77,7 +77,7 @@ function Screen({route , navigation}) {
             () => {
                 setCardChecking(cardChecking => cardChecking+1);
             }
-        , 1000);
+        , 20);
     } else if (!matchMaking && cardChecking !== 0) {
         clearInterval(interval);
         setCardChecking(0);
@@ -93,7 +93,7 @@ function Screen({route , navigation}) {
         <View style={{flex:1}}>
           <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
             <View style={{position:"absolute",justifyContent:'center',alignItems:'center',left:30}}>
-                <View style={{position:"relative",backgroundColor:"gray", marginTop:10, marginBottom:10,borderRadius:30}}>
+                <View style={{position:"relative", backgroundColor:"black", borderRadius: 10, width: 90, height: 85}}>
                       <Image source={{uri:(imgUrl != "") ? imgUrl : 'https://picsum.photos/800/1200.jpg'}} style={styles.iconUser}/>
                 </View>
                 <View style={{position:"relative"}}>
@@ -101,7 +101,7 @@ function Screen({route , navigation}) {
                 </View>
             </View>
             <View style={{flex:0.5,flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'rgba(84, 0, 0, 0.5)'}}>
-              <Text style={{fontSize:20, fontWeight: 'bold',color:'white'}}>Defender of the Legends</Text>
+              <Text style={styles.GameName}>Defender of the Legends</Text>
             </View>
 
         <View style={styles.viewbutton}>
@@ -138,10 +138,10 @@ function Screen({route , navigation}) {
                 </View>
               }
           </View>
-          <View style={{flexDirection:"column", justifyContent:"space-evenly", alignItems:"center"}}>
+          <View style={{flexDirection:"row", justifyContent:"space-evenly", alignItems:"center"}}>
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false)}>
                  <Text style={{color:"white"}}> cancal </Text>
-              </TouchableOpacity>   
+              </TouchableOpacity>
               {(cardChecking == _Deck.maxDeck()) &&
               <TouchableOpacity style={styles.findRoom} onPress={ 
                 () => navigation.navigate("MatchMaking", {
@@ -208,8 +208,8 @@ const styles = StyleSheet.create({
     },
     textinbutton:{
       color:"black",
-      fontWeight:'bold',
-      textAlign:'center'
+      textAlign:'center',
+      fontFamily: "takoyaki"
     },
     cancelinPlay:{
       backgroundColor:"#69041a",
@@ -257,6 +257,11 @@ const styles = StyleSheet.create({
       alignSelf: "center",
       backgroundColor:"white",
     },
+    GameName: { 
+      fontSize:20, 
+      color:'white',
+      fontFamily: "Megloria"
+  }
   });
 
 export default Screen;

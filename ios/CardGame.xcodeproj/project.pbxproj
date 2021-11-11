@@ -28,6 +28,9 @@
 		E8B9B6A06681454CA58A3FAF /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F686EAD09CD043AEAF99DEE8 /* Octicons.ttf */; };
 		F15BF453AFC645DA8446A186 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3FA47F5EC48A48A28FF0C543 /* SimpleLineIcons.ttf */; };
 		B31C29503C204441ADE201EE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 22DC6E417FCB4AFF965F0985 /* Zocial.ttf */; };
+		3885DFCA21C34807BF84CD08 /* Takoyaki.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F85F9FF4173492BAFCA416F /* Takoyaki.ttf */; };
+		5A48C6F254304A2EBF12EAE2 /* MEGLORIA.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6212F9D952E34727B97CAB4D /* MEGLORIA.ttf */; };
+		892D20CB12734CDA838EAE0A /* takoyaki.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48BBE2ABBBC648A2A37B86C5 /* takoyaki.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +71,9 @@
 		F686EAD09CD043AEAF99DEE8 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		3FA47F5EC48A48A28FF0C543 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		22DC6E417FCB4AFF965F0985 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2F85F9FF4173492BAFCA416F /* Takoyaki.ttf */ = {isa = PBXFileReference; name = "Takoyaki.ttf"; path = "../app/assets/fonts/Takoyaki.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6212F9D952E34727B97CAB4D /* MEGLORIA.ttf */ = {isa = PBXFileReference; name = "MEGLORIA.ttf"; path = "../app/assets/fonts/MEGLORIA.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		48BBE2ABBBC648A2A37B86C5 /* takoyaki.ttf */ = {isa = PBXFileReference; name = "takoyaki.ttf"; path = "../app/assets/fonts/takoyaki.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +182,9 @@
 				F686EAD09CD043AEAF99DEE8 /* Octicons.ttf */,
 				3FA47F5EC48A48A28FF0C543 /* SimpleLineIcons.ttf */,
 				22DC6E417FCB4AFF965F0985 /* Zocial.ttf */,
+				2F85F9FF4173492BAFCA416F /* Takoyaki.ttf */,
+				6212F9D952E34727B97CAB4D /* MEGLORIA.ttf */,
+				48BBE2ABBBC648A2A37B86C5 /* takoyaki.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -287,6 +296,9 @@
 				E8B9B6A06681454CA58A3FAF /* Octicons.ttf in Resources */,
 				F15BF453AFC645DA8446A186 /* SimpleLineIcons.ttf in Resources */,
 				B31C29503C204441ADE201EE /* Zocial.ttf in Resources */,
+				3885DFCA21C34807BF84CD08 /* Takoyaki.ttf in Resources */,
+				5A48C6F254304A2EBF12EAE2 /* MEGLORIA.ttf in Resources */,
+				892D20CB12734CDA838EAE0A /* takoyaki.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
