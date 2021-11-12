@@ -91,16 +91,16 @@ function Screen({route , navigation}) {
     return ( 
         <View style={{flex:1}}>
           <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
-            <View style={{position:"absolute",justifyContent:'center',alignItems:'center',left:30}}>
-                <View style={{position:"relative",backgroundColor:"gray", marginTop:10, marginBottom:10,borderRadius:30}}>
+            <View style={styles.imgForUser}>
+                <View style={styles.backGroundIMG}>
                       <Image source={{uri:(imgUrl != "") ? imgUrl : 'https://picsum.photos/800/1200.jpg'}} style={styles.iconUser}/>
                 </View>
                 <View style={{position:"relative"}}>
                   <Text> {Name} </Text>
                 </View>
             </View>
-            <View style={{flex:0.5,flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'rgba(84, 0, 0, 0.5)'}}>
-              <Text style={{fontSize:20, fontWeight: 'bold',color:'white'}}>Defender of the Legends</Text>
+            <View style={styles.IMGICON}>
+              <Image source={require('./assets/DOTLS.png')} style={styles.imageIconLOGO}/>
             </View>
 
         <View style={styles.viewbutton}>
@@ -256,6 +256,30 @@ const styles = StyleSheet.create({
       alignSelf: "center",
       backgroundColor:"white",
     },
+    imgForUser:{
+      position:"absolute",
+      justifyContent:'center',
+      alignItems:'center',
+      left:30
+    },
+    backGroundIMG:{
+      position:"relative",
+      backgroundColor:"rgba(169, 160, 166, 0.26)",
+      marginTop:10, 
+      marginBottom:10,
+      borderBottomEndRadius:20,
+      borderTopLeftRadius:20,
+    },
+    imageIconLOGO:{
+      width:250,
+      height:250,
+      marginTop:20
+    },
+    IMGICON:{
+      flex:0.5,
+      flexDirection:'row',
+      justifyContent:'center',
+      alignItems:'center'}
   });
 
 export default Screen;
