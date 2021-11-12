@@ -103,4 +103,10 @@ async function _receiveGameData(roomID) {
     return room;
 }
 
-export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData, _saveDataDeck, _receiveGameData };
+async function getCardInformation(ID) {
+    const card = await firestore().collection('CardList').doc(ID).get()
+
+    return card._data
+}
+
+export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData, _saveDataDeck, _receiveGameData, getCardInformation };
