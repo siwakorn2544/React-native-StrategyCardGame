@@ -4,6 +4,7 @@ import { _receiveGameData, getCardInformation } from "./database/User";
 import { database, firestore } from './database/db';
 
 function PlayRoom({route , navigation}){
+    const [_firstTime, setFirstTime] = useState(true);
     const [Player01, setPlayer01] = useState([]);
     const [Player02, setPlayer02] = useState([]);
 
@@ -19,47 +20,38 @@ function PlayRoom({route , navigation}){
                 player02 = values
             }
         }
-        setPlayer01(player01);
+        // setPlayer01(player01);
         setPlayer02(player02);
-
-        console.log("01: ", player01);
+        DrawCardStartGame(player01, 3);
+        console.log("01:  ", player01);
         console.log("02: ", player02);
-        checkFieldHand();
     }
 
-    const checkFieldHand = () => {
-        if (Player01["hand"] == null){
-            Player01["hand"] = []
+    const DrawCardStartGame = async (deck, i) => {
+        for (let index = 0; index < i; index++) {
+                //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
+                let todraw = await getCardInformation(deck.Deck[0]);
+                deck.Hand.push(todraw);
+                deck.Deck.shift();  
+            } 
+            // await _asynsPlayer(route.params.UID);
+            console.log(deck);
+            setPlayer01(deck)
         }
-
-        if (Player02["hand"] == null){
-            Player02["hand"] = []
-        }
-        if(Player01["field"] == null){
-            Player01["field"] = []
-        }
-        if(Player02["field"] == null){
-            Player02["field"] = []
-        }
-    }
 
     const drawCard =  async(i) => {
-        for (let index = 0; index < i; index++) {
-            //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
-            // let todraw = await getCardInformation(Player01.Deck[0]);
-            // Player01.hand.push(todraw);
-            // Player01.deck.shift();  
-        }
-        await _asynsPlayer(route.params.UID);
-    }
-
-    const preparetation = async () => {
-        await _setDataGame(route.params.roomID);
-        await drawCard(3);
+        console.log("Deck: ", Player01);
+        // for (let index = 0; index < i; index++) {
+        //     //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
+        //     let todraw = await getCardInformation(Player01.Deck[0]);
+        //     Player01.hand.push(todraw);
+        //     Player01.deck.shift();  
+        // }
+        // await _asynsPlayer(route.params.UID);
     }
 
     // database()
-    //     .ref(`/playroom/${route.params.roomID}/players/${Player01}/field`)
+    //     .ref(`/playroom/${route.params.roomID}/players/${Player01.UID}/field`)
     //     .on('value', snapshot => {
     //         console.log('field: ', snapshot.val());
     //         //render ค่าใหม่
@@ -67,7 +59,7 @@ function PlayRoom({route , navigation}){
     // });
 
     // database()
-    //     .ref(`/playroom/${route.params.roomID}/players/${Player02}/field`)
+    //     .ref(`/playroom/${route.params.roomID}/players/${Player02.UID}/field`)
     //     .on('value', snapshot => {
     //         console.log('field: ', snapshot.val());
     //         //render ค่าใหม่
@@ -75,7 +67,7 @@ function PlayRoom({route , navigation}){
     // });
 
     // database()
-    //     .ref(`/playroom/${route.params.roomID}/players/${Player02}/hand`)
+    //     .ref(`/playroom/${route.params.roomID}/players/${Player02.UID}/hand`)
     //     .on('value', snapshot => {
     //         console.log('hand: ', snapshot.val());
     //         //render ค่าใหม่
@@ -83,7 +75,8 @@ function PlayRoom({route , navigation}){
     // });
 
     useEffect(() => {
-        preparetation()
+        _setDataGame(route.params.roomID);
+
     }, [])
 
     // const endGame = () => {
@@ -93,7 +86,7 @@ function PlayRoom({route , navigation}){
     return(
     <View>
         <Text>
-           {Player02.LiftPoint}
+           a
         </Text>
     </View>
     )
