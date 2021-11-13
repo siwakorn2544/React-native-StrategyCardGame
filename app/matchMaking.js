@@ -32,6 +32,9 @@ function MatchMaking({route, navigation}){
       .ref(`/PlayRoom`)
       .on('value', snapshot => {
         if(roomID in snapshot.val())
+          
+
+
         setTimeout(() => {
           navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
         }, 3000)

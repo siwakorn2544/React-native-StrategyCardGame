@@ -22,9 +22,11 @@ function PlayRoom({route , navigation}){
         }
         // setPlayer01(player01);
         setPlayer02(player02);
-        DrawCardStartGame(player01, 3);
-        console.log("01:  ", player01);
-        console.log("02: ", player02);
+        setPlayer01(player01);
+        // await DrawCardStartGame(player01, 3);
+        console.log("01:  ", Player01);
+        console.log("02: ", Player02);
+        return [player01, player02]
     }
 
     const DrawCardStartGame = async (deck, i) => {
@@ -32,7 +34,7 @@ function PlayRoom({route , navigation}){
                 //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
                 let todraw = await getCardInformation(deck.Deck[0]);
                 deck.Hand.push(todraw);
-                deck.Deck.shift();  
+                deck.Deck.shift();
             } 
             // await _asynsPlayer(route.params.UID);
             console.log(deck);
@@ -50,33 +52,36 @@ function PlayRoom({route , navigation}){
         // await _asynsPlayer(route.params.UID);
     }
 
-    // database()
-    //     .ref(`/playroom/${route.params.roomID}/players/${Player01.UID}/field`)
-    //     .on('value', snapshot => {
-    //         console.log('field: ', snapshot.val());
-    //         //render ค่าใหม่
-    //         Player01.field = snapshot.val()
-    // });
+    
 
-    // database()
-    //     .ref(`/playroom/${route.params.roomID}/players/${Player02.UID}/field`)
-    //     .on('value', snapshot => {
-    //         console.log('field: ', snapshot.val());
-    //         //render ค่าใหม่
-    //         Player02.field = snapshot.val()
-    // });
+    useEffect(async () => {
+        let players = await _setDataGame(route.params.roomID);
+        setPlayer01(players[0])
+        setPlayer02(players[1])
+        await DrawCardStartGame(players[0], 3);
+        
+        database()
+            .ref(`/PlayRoom/${route.params.roomID}/players/${players[0].UID}/Field`)
+            .on('value', snapshot => {
+                console.log('field 01: ', snapshot.val());
+                //render ค่าใหม่
+                Player01.field = snapshot.val()
+        });    
+        database()
+            .ref(`/PlayRoom/${route.params.roomID}/players/${players[1].UID}/Field`)
+            .on('value', snapshot => {
+                console.log('field 02: ', snapshot.val());
+                //render ค่าใหม่
+                Player02.field = snapshot.val()
+        });
 
-    // database()
-    //     .ref(`/playroom/${route.params.roomID}/players/${Player02.UID}/hand`)
-    //     .on('value', snapshot => {
-    //         console.log('hand: ', snapshot.val());
-    //         //render ค่าใหม่
-    //         Player02.field = snapshot.val()
-    // });
-
-    useEffect(() => {
-        _setDataGame(route.params.roomID);
-
+        database()
+            .ref(`/Playroom/${route.params.roomID}/players/${players[1].UID}/Hand`)
+            .on('value', snapshot => {
+                console.log('hand 02: ', snapshot.val());
+                //render ค่าใหม่
+                Player02.field = snapshot.val()
+        });
     }, [])
 
     // const endGame = () => {
