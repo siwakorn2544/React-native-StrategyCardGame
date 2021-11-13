@@ -104,7 +104,7 @@ function App ({ navigation }) {
               <View style={styles.buttonContainer}>
                 {!user}
                 {user && (
-                  <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
+                  <View style={styles.UserView}> 
                        <Text style={styles.fontWelcome} >Welcome {user.displayName}</Text>
                           
                           <View style={styles.imgUser}>
@@ -205,7 +205,13 @@ const styles = StyleSheet.create({
     marginTop:10,
     marginBottom:10,
     borderTopRightRadius:20,
-    borderBottomLeftRadius:20,}
+    borderBottomLeftRadius:20,
+  },
+  UserView:{
+  flex:1,
+  justifyContent:'center',
+  alignItems:'center'
+  },
 });
 
 export default App;
