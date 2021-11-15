@@ -15,27 +15,28 @@ function Screen({route , navigation}) {
     const [cardChecking, setCardChecking] = useState(0);
     const [matchMaking, setMatchMaking] = useState(false);
     const [finding, setFinding] = useState(false);
-    const [imgUrl,setImg] = useState("");
+    const [imgUrl, setImg] = useState("");
     const _retrieveData = async () => {
       try {
         //GET DATA
         const value = route.params.UID;
+        const image = route.params.image
         const name = await _receiveName(value);
         const deck = await _receiveDeckData(value);
         //SET DATA
         setUID(value);
         setName(name);
         setDeck(deck);
+        setImg(image);
         
+        // console.log(image, name, deck);
       } catch (error) {
         // Error retrieving data
         console.log('error')
       }
-      setImg(route.params.image)
+      
     }
 
-    
-  
     const MyXicon = () => {
       return(
         <Icon name="close" size={15} color="red" > </Icon>
@@ -76,7 +77,7 @@ function Screen({route , navigation}) {
             () => {
                 setCardChecking(cardChecking => cardChecking+1);
             }
-        , 1000);
+        , 20);
     } else if (!matchMaking && cardChecking !== 0) {
         clearInterval(interval);
         setCardChecking(0);
@@ -112,7 +113,7 @@ function Screen({route , navigation}) {
               <Text style={styles.textinbutton}><MyFicon/>Play</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonDeck}
-              onPress={() => navigation.navigate('DeckC', {DECK: myDeck})}> 
+              onPress={() => navigation.navigate('DeckC', {UID: UID ,DECK: myDeck})}> 
               <Text style={styles.textinbutton}><MYDicon/>Deck</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonExit}
@@ -137,11 +138,11 @@ function Screen({route , navigation}) {
                 </View>
               }
           </View>
-          <View style={{flexDirection:"column", justifyContent:"space-evenly", alignItems:"center"}}>
+          <View style={{flexDirection:"row", justifyContent:"space-evenly", alignItems:"center"}}>
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false)}>
                  <Text style={{color:"white"}}> cancal </Text>
-              </TouchableOpacity>   
-              {(cardChecking == _Deck.maxDeck()) &&
+              </TouchableOpacity>
+              {(cardChecking >= _Deck.maxDeck()) &&
               <TouchableOpacity style={styles.findRoom} onPress={ 
                 () => navigation.navigate("MatchMaking", {
                   UID: UID,
@@ -202,8 +203,8 @@ const styles = StyleSheet.create({
     },
     textinbutton:{
       color:"black",
-      fontWeight:'bold',
-      textAlign:'center'
+      textAlign:'center',
+      fontFamily: "takoyaki"
     },
     cancelinPlay:{
       backgroundColor:"#69041a",
@@ -277,6 +278,11 @@ const styles = StyleSheet.create({
       justifyContent:'center',
       alignItems:'center'},
     //------------------
+    GameName: { 
+      fontSize:20, 
+      color:'white',
+      fontFamily: "Megloria"
+  }
   });
 
 export default Screen;

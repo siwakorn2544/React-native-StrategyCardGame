@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {getCardLists, _receiveDeckData, getCardData} from './database/User'
+import {getCardLists, _receiveDeckData, getCardData, _saveDataDeck} from './database/User'
 import CardItem from './component/CardItem';
 import DeckSelect from './component/DeckSelect'
 import { Button, SafeAreaView, StyleSheet, Text, View, FlatList, ScrollView, TouchableOpacity,ImageBackground} from 'react-native';
@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 
 function Screen({route, navigation}) {
     const [Deck, setDeck] = useState([]);
-    const [Name, setName] = useState("test");
     const [CardLists, setCardLists] = useState([]);
     const [dropZoneValues, setDropzone] = useState();
     const [deckZoneValues, setDeckzone] = useState();
@@ -20,10 +19,34 @@ function Screen({route, navigation}) {
         cardId = {data.item.id} 
         dropzone={deckZoneValues}
         addCardToDeck = {(id) => {
-          console.log('Add Card:', id, 'to Deck!!');
-          setDeck([...Deck, id]);
+          if (cardCheckLimit(id)){
+            console.log('Add Card:', id, 'to Deck!!');
+            setDeck([...Deck, id]);
+          }
         }}
       />)
+    }
+
+    const cardCheckLimit = (id) => {
+      //case1: card in deck equal 40
+      if(cardCount == 40){
+        alert("you can't add card in deck more then 40");
+        return false
+      }
+      //case2: card in duplicate more then 3
+        const card = cardInDeck.filter((card) => {
+          if(card.id == id){
+            return card;
+          }
+        });
+        if (card[0] == undefined){
+          return true
+        }
+        else if (card[0].count < 3){
+          return true
+        }
+        alert("you can't add card duplicate more than 3");
+        return false
     }
 
     const renderDeckSelect = (data) => {
@@ -59,7 +82,7 @@ function Screen({route, navigation}) {
     }
 
     const saveDeck = () => {
-      
+      _saveDataDeck(route.params.UID, Deck);
     }
 
     const setDeckZoneLocations = (event) => {
@@ -73,7 +96,9 @@ function Screen({route, navigation}) {
     }
 
     useEffect(() => {
-      setDeck(route.params.DECK);
+      if (route.params.DECK != null){
+        setDeck(route.params.DECK);
+      }
       _retrieveCardLists();
     }
     ,[])

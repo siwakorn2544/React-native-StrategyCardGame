@@ -21,7 +21,12 @@ async function _receiveDeckData(UID){
     await database().ref(`/users/${UID}/Deck`)
         .once('value')
         .then(snapshot => {
-            decklist = snapshot.val();
+            if (snapshot.val() == null){
+                decklist = []
+            }
+            else {
+                decklist = snapshot.val(); 
+            }
             console.log(decklist);
         });
     return decklist;
@@ -75,4 +80,33 @@ async function getCardData(deck){
     return data;
 }
 
-export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData };
+async function _saveDataDeck(uid, deck){
+    console.log(deck[0] == null);
+    if (deck[0] != null){
+        try {
+            await database().ref(`/users/${uid}`).child("Deck").set(deck);
+            console.log('Deck Saved!!')
+        } catch (err) {
+            console.log('Add fail:  '+err);
+        }
+    } 
+}
+
+async function _receiveGameData(roomID) {
+    let room = [];
+    await database().ref(`/PlayRoom/${roomID}`)
+        .once('value')
+        .then(snapshot =>{
+            room = snapshot.val();
+            console.log(room);
+        })
+    return room;
+}
+
+async function getCardInformation(ID) {
+    const card = await firestore().collection('CardList').doc(ID).get()
+
+    return card._data
+}
+
+export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData, _saveDataDeck, _receiveGameData, getCardInformation };
