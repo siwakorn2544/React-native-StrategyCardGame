@@ -70,7 +70,7 @@ GoogleService-Info.plist
 SHA1.txt
 
 
-app/test.js
+# app/test.js
 
 
 package.json

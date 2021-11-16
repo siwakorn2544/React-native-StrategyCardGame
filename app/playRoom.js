@@ -80,7 +80,7 @@ function PlayRoom({route , navigation}){
             .on('value', snapshot => {
                 console.log('hand 02: ', snapshot.val());
                 //render ค่าใหม่
-                Player02.field = snapshot.val()
+                Player02.Hand = snapshot.val()
         });
     }, [])
 
