@@ -27,7 +27,7 @@ export default function FieldMonster(props){
     },[])
 
     return (
-    <View style={{paddingLeft: 4, height: 100}}>
+    <View style={{paddingLeft: 4, height: 80}}>
         <View style={{elevation: 3}}>
             <Image source={ClassOfCards[props.Class]} style={styles.iconCard}/>
             <View style={styles.atkBox}>
