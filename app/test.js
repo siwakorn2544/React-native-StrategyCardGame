@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { database, firestore } from './database/db';
+import { getCardInformation } from './database/User';
 import { Button, Text, View, TouchableOpacity, FlatList, Image, StyleSheet, ImageBackground, Animated,PanResponder } from "react-native";
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Entypo';
@@ -55,14 +56,15 @@ function Testing() {
   ])
 
   const [myUnit,setmyUnit] = useState([
-    {imgURL: "0010.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },
-    {imgURL: "0012.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },
-    {imgURL: "0013.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },    
-    {imgURL: "0013.jpg", class: "Ranger", atk: 5, hp: 10, canAttack: 1 },    
+    {imgURL: "0010.jpg", class: "Knight", atk: 5, hp: 1, canAttack: 1 },
+    {imgURL: "0012.jpg", class: "Healer", atk: 5, hp: 1, canAttack: 1 },
+    {imgURL: "0013.jpg", class: "Mage", atk: 5, hp: 1, canAttack: 1 },    
+    {imgURL: "0013.jpg", class: "Defender", atk: 5, hp: 1, canAttack: 1 },    
   ])
 
   const [Attacking, setAttacking] = useState(null);
   const [selectedfield, setFieldColor] = useState([0,0,0,0,0]);
+  const [MageAttacking, setMageAttacking] = useState([]);
   
   const [Phase, setPhase] = useState(1);
   const [Turn, setTurn] = useState(null);
@@ -147,7 +149,14 @@ function Testing() {
   const Attack = (index1, index2) => {
     if(Phase == 2){
         let enemyUnit = EnemyUnit;
-        enemyUnit[index2].hp -= myUnit[index1].atk;
+        if(MageAttacking.indexOf(index1) != -1){
+          for (let i = 0; i < enemyUnit.length; i++) {
+            enemyUnit[i].hp -= myUnit[index1].atk;
+          }
+          setMageAttacking(MageAttacking.filter((i) => i == MageAttacking.indexOf(index1)))
+        }else{
+          enemyUnit[index2].hp -= myUnit[index1].atk;
+        }
         myUnit[index1].canAttack -= 1;
         setFieldColor([0,0,0,0,0]);
         setEnemyUnit[enemyUnit]
@@ -169,17 +178,29 @@ function Testing() {
       return item.hp > 0;
   }
 
-  const useSkill = (index, Class) => {
+  const useSkill = async (index, Class) => {
     let updatedUnit = myUnit;
     if(Class == "Knight" && Mana >= 1){
       updatedUnit[index].canAttack++; setMana(Mana-1);
     }
     else if(Class == "Healer" && Mana >= 2){
-      myUnit[index].canAttack++; setMana(Mana-2);
+      for (let i = 0; i < updatedUnit.length; i++) {
+        let cardata = await firestore().collection('CardList').doc(updatedUnit[i].imgURL.split('.')[0]).get()
+        var maxhpofcard = cardata._data.Classes.indexOf(updatedUnit[i].class)
+        // console.log(cardata._data.hps[a], updatedUnit[i].hp+updatedUnit[index].atk)
+        if(cardata._data.hps[maxhpofcard] >= updatedUnit[i].hp+updatedUnit[index].atk){
+          updatedUnit[i].hp += updatedUnit[i].class != "Healer" ? updatedUnit[index].atk : 0;
+        }else{
+          updatedUnit[i].hp = updatedUnit[i].class != "Healer" ? cardata._data.hps[maxhpofcard] : updatedUnit[i].hp;
+        }
+      }
+      updatedUnit[index].canAttack = 0;
+      setMana(Mana-2);
     }
     else if(Class == "Mage" && Mana >= 1){
-      myUnit[index].canAttack++; setMana(Mana-2);
+      setMageAttacking([...MageAttacking, index]); setMana(Mana-2);
     }
+    // console.log(updatedUnit)
     setmyUnit(updatedUnit)
   }
 
