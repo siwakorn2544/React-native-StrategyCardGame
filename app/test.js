@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Text, View, TouchableOpacity, FlatList, Image, StyleSheet, ImageBackground } from "react-native";
+import React, { useState, useRef } from "react";
+import { Button, Text, View, TouchableOpacity, FlatList, Image, StyleSheet, ImageBackground, Animated,PanResponder } from "react-native";
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Entypo';
 import MyHand from "./component/HandUser"
@@ -10,6 +10,28 @@ function Testing() {
   const Mana = 3;
   const HP_1 = 20;
   const HP_2 = 20;
+  const parse = 1;
+
+  const pan = useRef(new Animated.ValueXY()).current; //step01
+  const maxVal = -50;
+  
+  const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderMove: (e, gesture) => {
+          const newVal =  (gesture.dx < maxVal) ? maxVal : ((gesture.dx > 0) ? 0 : gesture.dx);
+          pan.setValue({x: newVal, y: 0 });
+        },
+        onPanResponderRelease: (e, gesture) => {
+            drawCard();
+            Animated.spring(
+                pan, { toValue:{x:0, y:0}, useNativeDriver: false }
+            ).start();
+        },
+    }); //step02
+
+  const drawCard = () => {
+    console.log("draw function!!")
+  }
 
   const handEnemy_Data = [
     {imgURL: "0001.jpg"},
@@ -165,17 +187,30 @@ function Testing() {
               <Image source={require("./assets/backCard.jpg")} 
                     style={styles.deckCard}
               />
-            </View>
+          </View>
             <View style={{height: 100, width: 100, borderRadius: 100, marginLeft: 30 ,backgroundColor: "white"}}>
               <TouchableOpacity style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
                   <Text style={{color: "white", fontWeight: "bold"}}>เจอได้ไอ้สัส</Text>
               </TouchableOpacity>
             </View>
-          <View style={{height: "25%", width: 80, marginVertical: 10, marginLeft: 40}}>
+            <View style={styles.deckLocation}>
               <Image source={require("./assets/backCard.jpg")} 
                     style={styles.deckCard}
               />
-          </View>
+            </View>
+            {/* {(parse == 1) && 
+            <View style={{position:"absolute", bottom: 40, right: 130}}>
+              <Text style={{fontSize: 14, fontWeight: "bold", color:"white"}} >{"◄◄ Slide " +'\n'+"     to Draw!"}</Text>
+            </View>} */}
+          {(parse == 1) &&
+          <Animated.View 
+            style={[pan.getLayout(), {height: "25%", width: 80, marginVertical: 10, marginLeft: 40, elevation: 5}]}
+            {...panResponder.panHandlers}
+          >
+              <Image source={require("./assets/backCard.jpg")} 
+                    style={styles.deckCard}
+              />
+          </Animated.View>}
         </View>
 
       </View>
@@ -238,6 +273,12 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1
+  },
+  deckLocation: {
+    position: "absolute",
+    right: 55,
+    bottom: 0,
+    elevation: 1
   }
 })
 
