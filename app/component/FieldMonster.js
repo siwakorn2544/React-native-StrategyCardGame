@@ -27,7 +27,7 @@ export default function FieldMonster(props){
     },[])
 
     return (
-    <View style={{paddingLeft: 4, height: 100}}>
+    <View style={{paddingLeft: 4, height: 80}}>
         <View style={{elevation: 3}}>
             <Image source={ClassOfCards[props.Class]} style={styles.iconCard}/>
             <View style={styles.atkBox}>
@@ -37,13 +37,37 @@ export default function FieldMonster(props){
                 <Text style={{fontWeight:"bold"}}>{props.HP}</Text>
             </View>
         </View>
-        <View style={styles.card}>
-            {(img != "") && (
-            <Image 
-                source={{ uri: img }}
-                style={styles.cardInField}
-            />)}
-        </View>
+        {(props.width == 2) && <TouchableOpacity onPress={() => props.target(props.index)}>
+            <View style={{borderWidth: props.width, borderColor: "green", backgroundColor: "red",
+            height: 50,
+            width: 54,
+            marginTop: 19,
+            overflow: "hidden",
+            marginRight: 2,}}>
+                {(img != "") && (
+                <Image 
+                    source={{ uri: img }}
+                    style={styles.cardInField}
+                />)}
+            </View>
+        </TouchableOpacity>}
+        {(props.width == 0) && 
+            <View style={styles.card}>
+                {(img != "") && (
+                <Image 
+                    source={{ uri: img }}
+                    style={styles.cardInField}
+                />)}
+            </View>}
+        {(props.width == -1) && <TouchableOpacity onPress={() => props.target(props.index)}>
+            <View style={styles.card}>
+                {(img != "") && (
+                <Image 
+                    source={{ uri: img }}
+                    style={styles.cardInField}
+                />)}
+            </View>
+        </TouchableOpacity>}
     </View>)
 }
 
@@ -60,7 +84,7 @@ const styles = StyleSheet.create({
         width: 54,
         marginTop: 19,
         overflow: "hidden",
-        marginRight: 2
+        marginRight: 2,
     },
     iconCard: {
         resizeMode: "contain",

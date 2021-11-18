@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Button, Text, View, TouchableOpacity, FlatList, Image, StyleSheet, ImageBackground } from "react-native";
+import React, { useState, useRef } from "react";
+import { database, firestore } from './database/db';
+import { Button, Text, View, TouchableOpacity, FlatList, Image, StyleSheet, ImageBackground, Animated,PanResponder } from "react-native";
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Entypo';
 import MyHand from "./component/HandUser"
@@ -10,6 +11,29 @@ function Testing() {
   const Mana = 3;
   const HP_1 = 20;
   const HP_2 = 20;
+  const parse = 1;
+
+  const pan = useRef(new Animated.ValueXY()).current; //step01
+  const maxVal = -50;
+  
+  const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderMove: (e, gesture) => {
+          const newVal =  (gesture.dx < maxVal) ? maxVal : ((gesture.dx > 0) ? 0 : gesture.dx);
+          pan.setValue({x: newVal, y: 0 });
+        },
+        onPanResponderRelease: (e, gesture) => {
+            drawCard();
+            Animated.spring(
+                pan, { toValue:{x:0, y:0}, useNativeDriver: false }
+            ).start();
+        },
+    }); //step02
+
+  const drawCard = () => {
+    console.log("draw function!!")
+  }
+
   const handEnemy_Data = [
     {imgURL: "0001.jpg"},
     {imgURL: "0002.jpg"},
@@ -18,33 +42,42 @@ function Testing() {
     {imgURL: "0005.jpg"},
     {imgURL: "0006.jpg"},
   ]
-  const myHand_Data = [
-    {imgURL: "0001.jpg"},
-    {imgURL: "0002.jpg"},
-    {imgURL: "0003.jpg"},
-  ]
+  const [myHand_Data, setmyHand] = useState([
+    {imgURL: "0001.jpg", class: ["Defender", "Knight"]},
+    {imgURL: "0002.jpg", class: ["Ranger", "Mage"]}, 
+    {imgURL: "0003.jpg", class: ["Knight", "Ranger"]},
+  ])
 
-  const EnemyUnit = [
+  const [EnemyUnit,setEnemyUnit] = useState([
     {imgURL: "0001.jpg", class: "Knight", atk: 5, hp: 10 },
     {imgURL: "0002.jpg", class: "Defender", atk: 5, hp: 10 },
     {imgURL: "0003.jpg", class: "Mage", atk: 5, hp: 10 },
-    {imgURL: "0002.jpg", class: "Mage", atk: 5, hp: 10 },
-    
-  ]
+    {imgURL: "0002.jpg", class: "Mage", atk: 5, hp: 10 }, 
+  ])
 
-  const myUnit = [
-    {imgURL: "0010.jpg", class: "Knight", atk: 5, hp: 10 },
-    {imgURL: "0012.jpg", class: "Knight", atk: 5, hp: 10 },
-    {imgURL: "0013.jpg", class: "Knight", atk: 5, hp: 10 },    
-  ]
+  const [myUnit,setmyUnit] = useState([
+    {imgURL: "0010.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },
+    {imgURL: "0012.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },
+    {imgURL: "0013.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },    
+    {imgURL: "0013.jpg", class: "Ranger", atk: 5, hp: 10, canAttack: 1 },    
+    
+    
+  ])
+
+  const [Attacking, setAttacking] = useState(null);
+  const [selectedfield, setFieldColor] = useState([0,0,0,0,0]);
+  
+  const [Phase, setPhase] = useState(2);
+  const [Turn, setTurn] = useState(null);
+
 
   const fieldEnemy = (data) => {
-    return (<FieldMonster ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
+    return (<FieldMonster index={data.index} target={targetAttack} width={selectedfield[data.index]} ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
     // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
   }
 
   const fieldUser = (data) => {
-    return (<FieldMonster ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
+    return (<FieldMonster index={data.index} target={handleFieldAction} width={-1} ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
     // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
   }
 
@@ -53,7 +86,18 @@ function Testing() {
   }
 
   const myHand = (data) => {
-    return (<MyHand id={data.item.imgURL} />)
+    return (<MyHand id={data.item.imgURL} Class={data.item.class} index={data.index} summonUnit = {async (classSelect,img,index) => {
+      console.log("TEST")
+      let newUnit = {imgURL: img, class: classSelect, atk: 5, hp: 10, canAttack: 1};
+      setmyUnit([...myUnit, newUnit])
+      let newHand = myHand_Data;
+      newHand.splice(index,1)
+      setmyHand([...newHand])
+      try{
+        await database().ref(`/Test/myUnit`).set([...myUnit, newUnit]);
+        await database().ref(`/Test/myhand`).set([...newHand]);
+      }catch(e){console.log(e)}
+    }}/>)
   }
 
   const MaxManaGem = () => {
@@ -67,6 +111,56 @@ function Testing() {
       }
     }
     return (components.map((value) => {return value}));
+  }
+
+  const handleFieldAction = (index) => {
+    // console.log(index)
+    if(myUnit[index]){
+      if(Phase == 1){
+        // console.log("Use Skill")
+      }
+      else if(Phase == 2 && myUnit[index].canAttack >= 1){
+        var isHaveDefender = EnemyUnit.some((u) => u.class == "Defender");
+        var newColorfield = [0,0,0,0,0];
+        for (let i = 0; i < EnemyUnit.length; i++) {
+          if((!isHaveDefender || EnemyUnit[i].class  == "Defender") || myUnit[index].class == "Ranger"){
+            newColorfield[i] = 2;
+          }
+        }
+        setFieldColor(newColorfield);
+        setAttacking(index);
+      }
+    }
+  }
+
+  const targetAttack = (index) => {
+    if(Phase == 2 && Attacking != null){
+      Attack(Attacking, index);
+    }
+  }
+
+  const Attack = (index1, index2) => {
+    if(Phase == 2){
+        let enemyUnit = EnemyUnit;
+        enemyUnit[index2].hp -= myUnit[index1].atk;
+        myUnit[index1].canAttack -= 1;
+        setFieldColor([0,0,0,0,0]);
+        setEnemyUnit[enemyUnit]
+        updateField();
+    }
+  }
+
+  async function updateField(){
+    let enemyUnit = EnemyUnit.filter(checkdeath);
+    let MyUnit = myUnit.filter(checkdeath);
+    console.log(enemyUnit)
+    setEnemyUnit(enemyUnit); setmyUnit(MyUnit);
+    await database().ref(`/Test/enemyUnit`).set(enemyUnit);
+    await database().ref(`/Test/myUnit`).set(MyUnit);
+  }
+
+  const checkdeath = (item) => {
+      return item.hp > 0;
   }
 
   return (
@@ -114,7 +208,7 @@ function Testing() {
                 style={styles.handStyle}
               />
           </View>
-          <View style={{height: "55%"}}>
+          <View style={{height: "50%"}}>
             <View style={{height: "50%", alignItems: "center"}}>
               <ImageBackground source={require("./assets/battlezone.png")} 
                 resizeMode="cover" 
@@ -162,17 +256,30 @@ function Testing() {
               <Image source={require("./assets/backCard.jpg")} 
                     style={styles.deckCard}
               />
-            </View>
+          </View>
             <View style={{height: 100, width: 100, borderRadius: 100, marginLeft: 30 ,backgroundColor: "white"}}>
               <TouchableOpacity style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
                   <Text style={{color: "white", fontWeight: "bold"}}>เจอได้ไอ้สัส</Text>
               </TouchableOpacity>
             </View>
-          <View style={{height: "25%", width: 80, marginVertical: 10, marginLeft: 40}}>
+            <View style={styles.deckLocation}>
               <Image source={require("./assets/backCard.jpg")} 
                     style={styles.deckCard}
               />
-          </View>
+            </View>
+            {/* {(parse == 1) && 
+            <View style={{position:"absolute", bottom: 40, right: 130}}>
+              <Text style={{fontSize: 14, fontWeight: "bold", color:"white"}} >{"◄◄ Slide " +'\n'+"     to Draw!"}</Text>
+            </View>} */}
+          {(parse == 1) &&
+          <Animated.View 
+            style={[pan.getLayout(), {height: "25%", width: 80, marginVertical: 10, marginLeft: 40, elevation: 5}]}
+            {...panResponder.panHandlers}
+          >
+              <Image source={require("./assets/backCard.jpg")} 
+                    style={styles.deckCard}
+              />
+          </Animated.View>}
         </View>
 
       </View>
@@ -235,6 +342,12 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1
+  },
+  deckLocation: {
+    position: "absolute",
+    right: 55,
+    bottom: 0,
+    elevation: 1
   }
 })
 
