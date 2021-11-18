@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { database, firestore } from './database/db';
 import { Button, Text, View, TouchableOpacity, FlatList, Image, StyleSheet, ImageBackground, Animated,PanResponder } from "react-native";
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Entypo';
@@ -41,11 +42,11 @@ function Testing() {
     {imgURL: "0005.jpg"},
     {imgURL: "0006.jpg"},
   ]
-  const myHand_Data = [
+  const [myHand_Data, setmyHand] = useState([
     {imgURL: "0001.jpg", class: ["Defender", "Knight"]},
     {imgURL: "0002.jpg", class: ["Ranger", "Mage"]}, 
     {imgURL: "0003.jpg", class: ["Knight", "Ranger"]},
-  ]
+  ])
 
   const [EnemyUnit,setEnemyUnit] = useState([
     {imgURL: "0001.jpg", class: "Knight", atk: 5, hp: 10 },
@@ -59,6 +60,7 @@ function Testing() {
     {imgURL: "0012.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },
     {imgURL: "0013.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },    
     {imgURL: "0013.jpg", class: "Ranger", atk: 5, hp: 10, canAttack: 1 },    
+    
     
   ])
 
@@ -84,8 +86,17 @@ function Testing() {
   }
 
   const myHand = (data) => {
-    return (<MyHand id={data.item.imgURL} Class={data.item.class} summonUnit = {(classSelect) => {
-      console.log("summon: ", data.item.imgURL, "in class ", classSelect, "!!");
+    return (<MyHand id={data.item.imgURL} Class={data.item.class} index={data.index} summonUnit = {async (classSelect,img,index) => {
+      console.log("TEST")
+      let newUnit = {imgURL: img, class: classSelect, atk: 5, hp: 10, canAttack: 1};
+      setmyUnit([...myUnit, newUnit])
+      let newHand = myHand_Data;
+      newHand.splice(index,1)
+      setmyHand([...newHand])
+      try{
+        await database().ref(`/Test/myUnit`).set([...myUnit, newUnit]);
+        await database().ref(`/Test/myhand`).set([...newHand]);
+      }catch(e){console.log(e)}
     }}/>)
   }
 
@@ -139,11 +150,13 @@ function Testing() {
     }
   }
 
-  const updateField = () => {
+  async function updateField(){
     let enemyUnit = EnemyUnit.filter(checkdeath);
     let MyUnit = myUnit.filter(checkdeath);
     console.log(enemyUnit)
     setEnemyUnit(enemyUnit); setmyUnit(MyUnit);
+    await database().ref(`/Test/enemyUnit`).set(enemyUnit);
+    await database().ref(`/Test/myUnit`).set(MyUnit);
   }
 
   const checkdeath = (item) => {

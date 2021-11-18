@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { database, firestore } from '../database/db';
 import { Button, Text, View, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import storage from "@react-native-firebase/storage";
 import Modal from "react-native-modal";
@@ -52,7 +53,7 @@ export default function MyHand(props) {
                         <Button 
                             title="►SELECT◄" 
                             color="#B91646"
-                            onPress={() => {props.summonUnit(props.Class[0])}}
+                            onPress={() => {props.summonUnit(props.Class[0],props.id,props.index); setShow(false);}}
                         />
                     </View>
                     <View style={{flexDirection: "row"}}>
@@ -67,7 +68,7 @@ export default function MyHand(props) {
                         <Button 
                             title="►SELECT◄" 
                             color="#B91646"
-                            onPress={() => {props.summonUnit(props.Class[1])}}
+                            onPress={() => {props.summonUnit(props.Class[1],props.id,props.index); setShow(false);}}
                         />
                     </View>
                 </View>
