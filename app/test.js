@@ -24,27 +24,35 @@ function Testing() {
     {imgURL: "0003.jpg"},
   ]
 
-  const EnemyUnit = [
+  const [EnemyUnit,setEnemyUnit] = useState([
     {imgURL: "0001.jpg", class: "Knight", atk: 5, hp: 10 },
     {imgURL: "0002.jpg", class: "Defender", atk: 5, hp: 10 },
     {imgURL: "0003.jpg", class: "Mage", atk: 5, hp: 10 },
     {imgURL: "0002.jpg", class: "Mage", atk: 5, hp: 10 },
     
-  ]
+  ])
 
-  const myUnit = [
-    {imgURL: "0010.jpg", class: "Knight", atk: 5, hp: 10 },
-    {imgURL: "0012.jpg", class: "Knight", atk: 5, hp: 10 },
-    {imgURL: "0013.jpg", class: "Knight", atk: 5, hp: 10 },    
-  ]
+  const [myUnit,setmyUnit] = useState([
+    {imgURL: "0010.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },
+    {imgURL: "0012.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },
+    {imgURL: "0013.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },    
+    {imgURL: "0013.jpg", class: "Ranger", atk: 5, hp: 10, canAttack: 1 },    
+    
+  ])
+
+  const [Attacking, setAttacking] = useState(null);
+  const [selectedfield, setFieldColor] = useState([0,0,0,0,0]);
+  
+  const [Phase, setPhase] = useState(2);
+  const [Turn, setTurn] = useState(null);
 
   const fieldEnemy = (data) => {
-    return (<FieldMonster ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
+    return (<FieldMonster index={data.index} target={targetAttack} width={selectedfield[data.index]} ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
     // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
   }
 
   const fieldUser = (data) => {
-    return (<FieldMonster ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
+    return (<FieldMonster index={data.index} target={handleFieldAction} width={-1} ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
     // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
   }
 
@@ -67,6 +75,54 @@ function Testing() {
       }
     }
     return (components.map((value) => {return value}));
+  }
+
+  const handleFieldAction = (index) => {
+    // console.log(index)
+    if(myUnit[index]){
+      if(Phase == 1){
+        // console.log("Use Skill")
+      }
+      else if(Phase == 2 && myUnit[index].canAttack >= 1){
+        var isHaveDefender = EnemyUnit.some((u) => u.class == "Defender");
+        var newColorfield = [0,0,0,0,0];
+        for (let i = 0; i < EnemyUnit.length; i++) {
+          if((!isHaveDefender || EnemyUnit[i].class  == "Defender") || myUnit[index].class == "Ranger"){
+            newColorfield[i] = 2;
+          }
+        }
+        setFieldColor(newColorfield);
+        setAttacking(index);
+      }
+    }
+  }
+
+  const targetAttack = (index) => {
+    if(Phase == 2 && Attacking != null){
+      Attack(Attacking, index);
+    }
+  }
+
+  const Attack = (index1, index2) => {
+    if(Phase == 2){
+        let enemyUnit = EnemyUnit;
+        enemyUnit[index2].hp -= myUnit[index1].atk;
+        myUnit[index1].canAttack -= 1;
+        setFieldColor([0,0,0,0,0]);
+        setEnemyUnit[enemyUnit]
+        updateField();
+    }
+  }
+
+  const updateField = () => {
+    let enemyUnit = EnemyUnit.filter(checkdeath);
+    let MyUnit = myUnit.filter(checkdeath);
+    console.log(enemyUnit)
+    setEnemyUnit(enemyUnit); setmyUnit(MyUnit);
+  }
+
+  const checkdeath = (item) => {
+      return item.hp > 0;
   }
 
   return (

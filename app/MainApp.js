@@ -14,8 +14,8 @@ function MyApp() {
   return (
     <NavigationContainer >
       <Stack.Navigator 
-        initialRouteName="LogIn"
-        // initialRouteName="Test"
+        // initialRouteName="LogIn"
+        initialRouteName="Test"
         screenOptions={{
           headerShown: false
         }}
