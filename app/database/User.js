@@ -105,7 +105,6 @@ async function _receiveGameData(roomID) {
 
 async function getCardInformation(ID) {
     const card = await firestore().collection('CardList').doc(ID).get()
-
     return card._data
 }
 

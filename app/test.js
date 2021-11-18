@@ -10,6 +10,7 @@ function Testing() {
   const Mana = 3;
   const HP_1 = 20;
   const HP_2 = 20;
+
   const handEnemy_Data = [
     {imgURL: "0001.jpg"},
     {imgURL: "0002.jpg"},
@@ -19,17 +20,16 @@ function Testing() {
     {imgURL: "0006.jpg"},
   ]
   const myHand_Data = [
-    {imgURL: "0001.jpg"},
-    {imgURL: "0002.jpg"},
-    {imgURL: "0003.jpg"},
+    {imgURL: "0001.jpg", class: ["Defender", "Knight"]},
+    {imgURL: "0002.jpg", class: ["Ranger", "Mage"]}, 
+    {imgURL: "0003.jpg", class: ["Knight", "Ranger"]},
   ]
 
   const EnemyUnit = [
     {imgURL: "0001.jpg", class: "Knight", atk: 5, hp: 10 },
     {imgURL: "0002.jpg", class: "Defender", atk: 5, hp: 10 },
     {imgURL: "0003.jpg", class: "Mage", atk: 5, hp: 10 },
-    {imgURL: "0002.jpg", class: "Mage", atk: 5, hp: 10 },
-    
+    {imgURL: "0002.jpg", class: "Mage", atk: 5, hp: 10 }, 
   ]
 
   const myUnit = [
@@ -38,12 +38,13 @@ function Testing() {
     {imgURL: "0013.jpg", class: "Knight", atk: 5, hp: 10 },    
   ]
 
+
   const fieldEnemy = (data) => {
     return (<FieldMonster ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
     // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
   }
 
-  const fieldUser = (data) => {
+  const fieldUser = (data, index) => {
     return (<FieldMonster ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
     // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
   }
@@ -53,7 +54,9 @@ function Testing() {
   }
 
   const myHand = (data) => {
-    return (<MyHand id={data.item.imgURL} />)
+    return (<MyHand id={data.item.imgURL} Class={data.item.class} summonUnit = {(classSelect) => {
+      console.log("summon: ", data.item.imgURL, "in class ", classSelect, "!!");
+    }}/>)
   }
 
   const MaxManaGem = () => {
@@ -114,7 +117,7 @@ function Testing() {
                 style={styles.handStyle}
               />
           </View>
-          <View style={{height: "55%"}}>
+          <View style={{height: "50%"}}>
             <View style={{height: "50%", alignItems: "center"}}>
               <ImageBackground source={require("./assets/battlezone.png")} 
                 resizeMode="cover" 
