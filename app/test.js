@@ -8,10 +8,11 @@ import FieldMonster from "./component/FieldMonster"
 
 function Testing() {
   const MaxMana = 6;
-  const Mana = 3;
+  const [Mana,setMana] = useState(3);
   const HP_1 = 20;
   const HP_2 = 20;
   const parse = 1;
+  const [Deck, setDeck] = useState([["0001.jpg",["Defender","Knight"],[5,7],[10,5]]])
 
   const pan = useRef(new Animated.ValueXY()).current; //step01
   const maxVal = -50;
@@ -30,9 +31,7 @@ function Testing() {
         },
     }); //step02
 
-  const drawCard = () => {
-    console.log("draw function!!")
-  }
+  
 
   const handEnemy_Data = [
     {imgURL: "0001.jpg"},
@@ -60,16 +59,22 @@ function Testing() {
     {imgURL: "0012.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },
     {imgURL: "0013.jpg", class: "Knight", atk: 5, hp: 10, canAttack: 1 },    
     {imgURL: "0013.jpg", class: "Ranger", atk: 5, hp: 10, canAttack: 1 },    
-    
-    
   ])
 
   const [Attacking, setAttacking] = useState(null);
   const [selectedfield, setFieldColor] = useState([0,0,0,0,0]);
   
-  const [Phase, setPhase] = useState(2);
+  const [Phase, setPhase] = useState(1);
   const [Turn, setTurn] = useState(null);
 
+  const drawCard = () => {
+    let newdeck = Deck;
+    let toDraw = Deck[0];
+    console.log(toDraw)
+    setmyHand([...myHand_Data, {imgURL: toDraw[0], class: toDraw[1]}])
+    newdeck.shift();
+    setDeck(newdeck)
+  }
 
   const fieldEnemy = (data) => {
     return (<FieldMonster index={data.index} target={targetAttack} width={selectedfield[data.index]} ATK={data.item.atk} HP={data.item.hp} Class={data.item.class} imgURL= {data.item.imgURL} />)
@@ -117,7 +122,7 @@ function Testing() {
     // console.log(index)
     if(myUnit[index]){
       if(Phase == 1){
-        // console.log("Use Skill")
+        useSkill(index, myUnit[index].class);
       }
       else if(Phase == 2 && myUnit[index].canAttack >= 1){
         var isHaveDefender = EnemyUnit.some((u) => u.class == "Defender");
@@ -155,12 +160,27 @@ function Testing() {
     let MyUnit = myUnit.filter(checkdeath);
     console.log(enemyUnit)
     setEnemyUnit(enemyUnit); setmyUnit(MyUnit);
+    console.log(MyUnit)
     await database().ref(`/Test/enemyUnit`).set(enemyUnit);
     await database().ref(`/Test/myUnit`).set(MyUnit);
   }
 
   const checkdeath = (item) => {
       return item.hp > 0;
+  }
+
+  const useSkill = (index, Class) => {
+    let updatedUnit = myUnit;
+    if(Class == "Knight" && Mana >= 1){
+      updatedUnit[index].canAttack++; setMana(Mana-1);
+    }
+    else if(Class == "Healer" && Mana >= 2){
+      myUnit[index].canAttack++; setMana(Mana-2);
+    }
+    else if(Class == "Mage" && Mana >= 1){
+      myUnit[index].canAttack++; setMana(Mana-2);
+    }
+    setmyUnit(updatedUnit)
   }
 
   return (
@@ -258,7 +278,7 @@ function Testing() {
               />
           </View>
             <View style={{height: 100, width: 100, borderRadius: 100, marginLeft: 30 ,backgroundColor: "white"}}>
-              <TouchableOpacity style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
+              <TouchableOpacity onPress={() => setPhase(2)} style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
                   <Text style={{color: "white", fontWeight: "bold"}}>เจอได้ไอ้สัส</Text>
               </TouchableOpacity>
             </View>
