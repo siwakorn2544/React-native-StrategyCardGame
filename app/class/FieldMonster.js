@@ -1,6 +1,5 @@
 class FieldMonster {
-    constructor(health,attack, name, nClass, imgURL){
-        this.name = name;
+    constructor(health, attack, nClass, imgURL){
         this.hp = health;
         this.atk = attack;
         this.canAttack = 1;

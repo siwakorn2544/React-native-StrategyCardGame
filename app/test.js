@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { database, firestore } from './database/db';
 import { getCardInformation } from './database/User';
 import { Button, Text, View, TouchableOpacity, FlatList, Image, StyleSheet, ImageBackground, Animated,PanResponder } from "react-native";
@@ -6,6 +6,7 @@ import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Entypo';
 import MyHand from "./component/HandUser"
 import FieldMonster from "./component/FieldMonster"
+import {_setFieldUnit} from './database/User'
 
 function Testing() {
   const MaxMana = 6;
@@ -26,9 +27,9 @@ function Testing() {
         },
         onPanResponderRelease: (e, gesture) => {
             drawCard();
-            Animated.spring(
-                pan, { toValue:{x:0, y:0}, useNativeDriver: false }
-            ).start();
+            // Animated.spring(
+            //     pan, { toValue:{x:0, y:0}, useNativeDriver: false }
+            // ).start();
         },
     }); //step02
 
@@ -111,10 +112,10 @@ function Testing() {
     let components = []
     for (let i = 1; i < MaxMana+1; i++) {
       if (i > Mana){
-        components.push(<Image source={require("./assets/mana(use).png")}  style = { styles.mana } />)
+        components.push(<Image source={require("./assets/mana(use).png")}  style = { styles.mana } key = {"mana-"+i} />)
       }
       else if (i <= Mana){
-        components.push(<Image source={require("./assets/mana.png")} style = { styles.mana }/>)
+        components.push(<Image source={require("./assets/mana.png")} style = { styles.mana } key = {"mana-"+i}/>)
       }
     }
     return (components.map((value) => {return value}));
@@ -165,13 +166,10 @@ function Testing() {
   }
 
   async function updateField(){
-    let enemyUnit = EnemyUnit.filter(checkdeath);
-    let MyUnit = myUnit.filter(checkdeath);
-    console.log(enemyUnit)
+    const enemyUnit = EnemyUnit.filter(checkdeath);
+    const MyUnit = myUnit.filter(checkdeath);
     setEnemyUnit(enemyUnit); setmyUnit(MyUnit);
-    console.log(MyUnit)
-    await database().ref(`/Test/enemyUnit`).set(enemyUnit);
-    await database().ref(`/Test/myUnit`).set(MyUnit);
+    await _setFieldUnit(enemyUnit, MyUnit)
   }
 
   const checkdeath = (item) => {
@@ -247,6 +245,7 @@ function Testing() {
                 renderItem={handEnemy}
                 numColumns={6}
                 style={styles.handStyle}
+                keyExtractor={index => index}
               />
           </View>
           <View style={{height: "50%"}}>
@@ -257,12 +256,13 @@ function Testing() {
                   resizeMode: "contain",
                   height: 90,
                   width: 300,
-                  alignItems: (EnemyUnit.length % 2 == 0) ? "flex-start": "center"
+                  alignItems: "flex-start"
               }}>
                 <FlatList
                   data={EnemyUnit}
                   renderItem={fieldEnemy}
                   numColumns={5}
+                  keyExtractor={item => {item.imgURL+":"}}
                 />
               </ImageBackground>
             </View>
@@ -273,7 +273,7 @@ function Testing() {
                   resizeMode: "contain",
                   height: 90,
                   width: 300,
-                  alignItems: (myUnit.length % 2 == 0) ? "flex-start": "center"
+                  alignItems: "flex-start"
               }}>
                 <FlatList
                   data={myUnit}

@@ -108,4 +108,31 @@ async function getCardInformation(ID) {
     return card._data
 }
 
-export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData, _saveDataDeck, _receiveGameData, getCardInformation };
+async function _setFieldUnit(enemy, user) {
+    for (let index = 0; index < 5; index++) {
+        if (index < enemy.length){
+            var enemyCard = new Object({
+                atk: enemy[index].atk, 
+                class: enemy[index].class, 
+                hp: enemy[index].hp, 
+                imgURL: enemy[index].imgURL
+            });
+        }
+        else { var enemyCard = null }
+
+        if (index < user.length){
+            var userCard = new Object({
+                atk: user[index].atk,
+                canAttack: user[index].canAttack,
+                class: user[index].class,
+                hp: user[index].hp,
+                imgURL: user[index].imgURL
+            });
+        }      
+        else { var userCard = null; }
+        await database().ref('/Test/enemyUnit').child(index+"").set(enemyCard);
+        await database().ref('/Test/myUnit').child(index+"").set(userCard);
+    }
+}
+
+export { dataCheck, createUser, _receiveDeckData, _receiveName, getCardLists, getCardData, _saveDataDeck, _receiveGameData, getCardInformation, _setFieldUnit };
