@@ -44,9 +44,9 @@ function Testing() {
     {imgURL: "0006.jpg"},
   ]
   const [myHand_Data, setmyHand] = useState([
-    {imgURL: "0001.jpg", class: ["Defender", "Knight"]},
-    {imgURL: "0002.jpg", class: ["Ranger", "Mage"]}, 
-    {imgURL: "0003.jpg", class: ["Knight", "Ranger"]},
+    {imgURL: "0001.jpg", class: ["Defender", "Knight"],hps: [5,7], atks: [4,6]},
+    {imgURL: "0002.jpg", class: ["Ranger", "Mage"],hps: [5,7], atks: [4,6]}, 
+    {imgURL: "0003.jpg", class: ["Knight", "Ranger"],hps: [5,7], atks: [4,6]},
   ])
 
   const [EnemyUnit,setEnemyUnit] = useState([
@@ -132,9 +132,11 @@ function Testing() {
   }
 
   const myHand = (data) => {
-    return (<MyHand id={data.item.imgURL} Class={data.item.class} index={data.index} summonUnit = {async (classSelect,img,index) => {
+    return (<MyHand atk={data.item.atks} hp={data.item.hps} id={data.item.imgURL} Class={data.item.class} index={data.index} summonUnit = {async (classSelect,img,index,atk,hp) => {
       if(Turn == "p1"){
-      let newUnit = {class: classSelect, imgURL: img, canAttack: 1, hp: 10, atk: 5};
+      var isberserk = classSelect == "Berserker" ? 1 : 0;
+      console.log(atk,hp)
+      let newUnit = {class: classSelect, imgURL: img, canAttack: isberserk, hp: hp, atk: atk};
       setmyUnit([...myUnit, newUnit])
       let newHand = myHand_Data;
       newHand.splice(index,1)
