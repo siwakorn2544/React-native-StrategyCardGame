@@ -50,17 +50,17 @@ function Testing() {
   ])
 
   const [EnemyUnit,setEnemyUnit] = useState([
-    {imgURL: "0001.jpg", class: "Knight", atk: 5, hp: 10 },
-    {imgURL: "0002.jpg", class: "Defender", atk: 5, hp: 10 },
-    {imgURL: "0003.jpg", class: "Mage", atk: 5, hp: 10 },
-    {imgURL: "0002.jpg", class: "Mage", atk: 5, hp: 10 }, 
+    {imgURL: "0001.jpg", class: "Knight", hp: 10, atk: 5},
+    {imgURL: "0002.jpg", class: "Defender", hp: 10, atk: 5},
+    {imgURL: "0003.jpg", class: "Mage", hp: 10, atk: 5},
+    {imgURL: "0002.jpg", class: "Mage", hp: 10, atk: 5}, 
   ])
 
   const [myUnit,setmyUnit] = useState([
-    {imgURL: "0010.jpg", class: "Knight", atk: 5, hp: 1, canAttack: 1 },
-    {imgURL: "0012.jpg", class: "Healer", atk: 5, hp: 1, canAttack: 1 },
-    {imgURL: "0013.jpg", class: "Mage", atk: 5, hp: 1, canAttack: 1 },    
-    {imgURL: "0013.jpg", class: "Defender", atk: 5, hp: 1, canAttack: 1 },    
+    {class: "Knight",imgURL: "0010.jpg",canAttack: 1, hp: 11,atk: 10},
+    {class: "Healer",imgURL: "0012.jpg",canAttack: 1, hp: 1,atk: 5},
+    {class: "Mage",imgURL: "0013.jpg",canAttack: 1, hp: 1,atk: 5},    
+    {class: "Defender",imgURL: "0013.jpg",canAttack: 1, hp: 1,atk: 5},    
   ])
 
   const [Attacking, setAttacking] = useState(null);
@@ -69,6 +69,62 @@ function Testing() {
   
   const [Phase, setPhase] = useState(1);
   const [Turn, setTurn] = useState(null);
+  let updated1 = false;
+  let updated2 = false;
+  let clonemyField = myUnit;
+  let cloneenemyField = EnemyUnit;
+
+  database().ref(`/Test/myUnit`)
+    .on('value', snapshot => {
+      clonemyField = myUnit;
+        setmyUnit(snapshot.val())
+        console.log(1)
+        // console.log(JSON.stringify(snapshot.val())+"\n"+
+        // JSON.stringify(myUnit))
+      
+    });
+    database().ref(`/Test/enemyUnit`)
+    .on('value', snapshot => {
+      cloneenemyField = EnemyUnit;
+        setEnemyUnit(snapshot.val())
+        // console.log(JSON.stringify(snapshot.val())+"\n"+
+        // JSON.stringify(EnemyUnit))
+        console.log(2)
+    });
+
+
+  // database().ref('/Test/enemyUnit/0').on('value', snapshot => {
+  //   // console.log("1:"+snapshot.val()+" "+EnemyUnit[0].hp);
+  //   if(snapshot.exists() && EnemyUnit[0].hp !== snapshot.val().hp){
+  //      console.log("1:"+snapshot.val());
+  //   }
+  // });
+  // database().ref('/Test/enemyUnit/1').on('value', snapshot => {
+  //   // console.log("2:"+snapshot.val()+" "+EnemyUnit[1].hp);
+  //   if(snapshot.exists() && EnemyUnit[1].hp !== snapshot.val().hp){
+  //      console.log("2:"+snapshot.val().hp+" "+EnemyUnit[1].hp);
+  //   }
+  // });
+  // database().ref('/Test/enemyUnit/2').on('value', snapshot => {
+  //   // console.log("3:"+snapshot.val()+" "+EnemyUnit[2].hp);
+  //   if(snapshot.exists() && EnemyUnit[2].hp !== snapshot.val().hp){
+  //      console.log("3:"+snapshot.val());
+  //   }
+  // });
+  // database().ref('/Test/enemyUnit/3').on('value', snapshot => {
+  //   // console.log("4:"+snapshot.val()+" "+EnemyUnit[3].hp);
+  //   if(snapshot.exists() && EnemyUnit[3].hp !== snapshot.val().hp){
+  //      console.log("4:"+snapshot.val());
+  //   }
+  // });
+  // database().ref('/Test/enemyUnit/4').on('value', snapshot => {
+  //   // console.log("5:"+snapshot.val()+" ");
+  //   if(snapshot.exists() && EnemyUnit[4].hp !== snapshot.val().hp){
+  //      console.log("5:"+snapshot.val());
+  //   }
+  // });
+
+
 
   const drawCard = () => {
     let newdeck = Deck;
@@ -96,7 +152,7 @@ function Testing() {
   const myHand = (data) => {
     return (<MyHand id={data.item.imgURL} Class={data.item.class} index={data.index} summonUnit = {async (classSelect,img,index) => {
       console.log("TEST")
-      let newUnit = {imgURL: img, class: classSelect, atk: 5, hp: 10, canAttack: 1};
+      let newUnit = {class: classSelect, imgURL: img, canAttack: 1, hp: 10, atk: 5};
       setmyUnit([...myUnit, newUnit])
       let newHand = myHand_Data;
       newHand.splice(index,1)
@@ -170,6 +226,7 @@ function Testing() {
     const MyUnit = myUnit.filter(checkdeath);
     setEnemyUnit(enemyUnit); setmyUnit(MyUnit);
     await _setFieldUnit(enemyUnit, MyUnit)
+    updated2 = true;
   }
 
   const checkdeath = (item) => {
@@ -313,7 +370,7 @@ function Testing() {
               <Text style={{fontSize: 14, fontWeight: "bold", color:"white"}} >{"◄◄ Slide " +'\n'+"     to Draw!"}</Text>
             </View>} */}
           {(parse == 1) &&
-          <Animated.View 
+          <Animated.View
             style={[pan.getLayout(), {height: "25%", width: 80, marginVertical: 10, marginLeft: 40, elevation: 5}]}
             {...panResponder.panHandlers}
           >
