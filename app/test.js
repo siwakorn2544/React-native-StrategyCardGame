@@ -9,10 +9,10 @@ import FieldMonster from "./component/FieldMonster"
 import {_setFieldUnit} from './database/User'
 
 function Testing() {
-  const MaxMana = 6;
-  const [Mana,setMana] = useState(3);
-  const HP_1 = 20;
-  const HP_2 = 20;
+  const [MaxMana,setMaxMana] = useState(6);
+  const [Mana,setMana] = useState(1);
+  const [LP_1, setlife1] = useState(20);
+  const [LP_2, setlife2] = useState(20);
   const parse = 1;
   const [Deck, setDeck] = useState([["0001.jpg",["Defender","Knight"],[5,7],[10,5]]])
 
@@ -69,15 +69,10 @@ function Testing() {
   
   const [Phase, setPhase] = useState(1);
   const [Turn, setTurn] = useState(null);
-  let updated1 = false;
-  let updated2 = false;
-  let clonemyField = myUnit;
-  let cloneenemyField = EnemyUnit;
 
     useEffect(async () => {
       database().ref(`/Test/myUnit`)
       .on('value', snapshot => {
-        clonemyField = myUnit;
           setmyUnit(snapshot.val())
           console.log(snapshot.val())
           // console.log(JSON.stringify(snapshot.val())+"\n"+
@@ -86,11 +81,29 @@ function Testing() {
     });
       database().ref(`/Test/enemyUnit`)
       .on('value', snapshot => {
-        cloneenemyField = EnemyUnit;
           setEnemyUnit(snapshot.val())
           // console.log(JSON.stringify(snapshot.val())+"\n"+
           // JSON.stringify(EnemyUnit))
           console.log(snapshot.val())
+    });
+    database().ref(`/Test/Turn`)
+    .on('value', async (snapshot) => {
+        setTurn(snapshot.val())
+        await database().ref(`/Test/${snapshot.val()}/MaxMana`).once('value').then(snapshot =>{
+          setMaxMana(snapshot.val())
+          setMana(snapshot.val())
+      })
+    });
+    database().ref(`/Test/${Turn}/Mana`).on('value', snapshot => {
+      setMana(snapshot.val());
+    });
+    database().ref(`/Test/p1/Lifepoint`)
+    .on('value', snapshot => {
+        setlife1(snapshot.val())
+    });
+    database().ref(`/Test/p2/Lifepoint`)
+    .on('value', snapshot => {
+      setlife2(snapshot.val())
     });
     },[])
 
@@ -101,6 +114,7 @@ function Testing() {
     setmyHand([...myHand_Data, {imgURL: toDraw[0], class: toDraw[1]}])
     newdeck.shift();
     setDeck(newdeck)
+    setMana(MaxMana)
   }
 
   const fieldEnemy = (data) => {
@@ -119,7 +133,7 @@ function Testing() {
 
   const myHand = (data) => {
     return (<MyHand id={data.item.imgURL} Class={data.item.class} index={data.index} summonUnit = {async (classSelect,img,index) => {
-      console.log("TEST")
+      if(Turn == "p1"){
       let newUnit = {class: classSelect, imgURL: img, canAttack: 1, hp: 10, atk: 5};
       setmyUnit([...myUnit, newUnit])
       let newHand = myHand_Data;
@@ -129,6 +143,7 @@ function Testing() {
         await database().ref(`/Test/myUnit`).set([...myUnit, newUnit]);
         await database().ref(`/Test/myhand`).set([...newHand]);
       }catch(e){console.log(e)}
+    }
     }}/>)
   }
 
@@ -145,28 +160,48 @@ function Testing() {
     return (components.map((value) => {return value}));
   }
 
+  const nextPhase = async () => {
+    if(Turn == "p1"){
+      if(Phase+1 == 2){
+        setPhase(Phase+1);
+        console.log(2)
+      }
+      else if(Phase+1 == 3){
+        await database().ref('/Test/Turn').set("p2");
+        console.log("End")
+        if(MaxMana < 6){
+          var newmax = MaxMana+1;
+          await database().ref('/Test/p1/MaxMana').set(newmax);
+        }
+        setPhase(0);
+      }
+    }
+  }
+
   const handleFieldAction = (index) => {
     // console.log(index)
-    if(myUnit[index]){
-      if(Phase == 1){
-        useSkill(index, myUnit[index].class);
-      }
-      else if(Phase == 2 && myUnit[index].canAttack >= 1){
-        var isHaveDefender = EnemyUnit.some((u) => u.class == "Defender");
-        var newColorfield = [0,0,0,0,0];
-        for (let i = 0; i < EnemyUnit.length; i++) {
-          if((!isHaveDefender || EnemyUnit[i].class  == "Defender") || myUnit[index].class == "Ranger"){
-            newColorfield[i] = 2;
-          }
+    if(Turn == "p1"){
+      if(myUnit[index]){
+        if(Phase == 1){
+          useSkill(index, myUnit[index].class);
         }
-        setFieldColor(newColorfield);
-        setAttacking(index);
+        else if(Phase == 2 && myUnit[index].canAttack >= 1){
+          var isHaveDefender = EnemyUnit.some((u) => u.class == "Defender");
+          var newColorfield = [0,0,0,0,0];
+          for (let i = 0; i < EnemyUnit.length; i++) {
+            if((!isHaveDefender || EnemyUnit[i].class  == "Defender") || myUnit[index].class == "Ranger"){
+              newColorfield[i] = 2;
+            }
+          }
+          setFieldColor(newColorfield);
+          setAttacking(index);
+        }
       }
     }
   }
 
   const targetAttack = (index) => {
-    if(Phase == 2 && Attacking != null){
+    if((Phase == 2 && Attacking != null) && Turn == "p1"){
       Attack(Attacking, index);
     }
   }
@@ -192,6 +227,10 @@ function Testing() {
   async function updateField(){
     const enemyUnit = EnemyUnit.filter(checkdeath);
     const MyUnit = myUnit.filter(checkdeath);
+    let newlife1 = LP_1-(myUnit.length-MyUnit.length);
+    await database().ref('/Test/p1/Lifepoint').set(newlife1);
+    let newlife2 = LP_2-(EnemyUnit.length-enemyUnit.length);
+    await database().ref('/Test/p2/Lifepoint').set(newlife2);
     setEnemyUnit(enemyUnit); setmyUnit(MyUnit);
     await _setFieldUnit(enemyUnit, MyUnit)
     updated2 = true;
@@ -203,8 +242,9 @@ function Testing() {
 
   const useSkill = async (index, Class) => {
     let updatedUnit = myUnit;
+    let newMana = Mana;
     if(Class == "Knight" && Mana >= 1){
-      updatedUnit[index].canAttack++; setMana(Mana-1);
+      updatedUnit[index].canAttack++; newMana-=1;
     }
     else if(Class == "Healer" && Mana >= 2){
       for (let i = 0; i < updatedUnit.length; i++) {
@@ -218,12 +258,13 @@ function Testing() {
         }
       }
       updatedUnit[index].canAttack = 0;
-      setMana(Mana-2);
+      newMana-=2;
     }
     else if(Class == "Mage" && Mana >= 1){
-      setMageAttacking([...MageAttacking, index]); setMana(Mana-2);
+      setMageAttacking([...MageAttacking, index]); newMana-=2;
     }
     // console.log(updatedUnit)
+    await database().ref('/Test/p1/Mana').set(newMana);
     await _setFieldUnit(EnemyUnit, updatedUnit)
     setmyUnit(updatedUnit)
   }
@@ -251,7 +292,7 @@ function Testing() {
                   <View style={styles.NameTagBox}>
                     <Text style={styles.NameTag}>SirNine</Text>
                   </View>
-                  <Text style={styles.lifepoint}>{HP_2}</Text>
+                  <Text style={styles.lifepoint}>{LP_2}</Text>
               </ImageBackground>
             </View>
             <View style={{height: "25%", width: 80}}>
@@ -259,7 +300,7 @@ function Testing() {
                 <View style={styles.NameTagBox}>
                   <Text style={styles.NameTag}>GodInwZa</Text>
                 </View> 
-                  <Text style={styles.lifepoint}>{HP_2}</Text>
+                  <Text style={styles.lifepoint}>{LP_1}</Text>
               </ImageBackground>
             </View>
           </View>
@@ -325,7 +366,7 @@ function Testing() {
               />
           </View>
             <View style={{height: 100, width: 100, borderRadius: 100, marginLeft: 30 ,backgroundColor: "white"}}>
-              <TouchableOpacity onPress={() => setPhase(2)} style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
+              <TouchableOpacity onPress={() => nextPhase()} style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
                   <Text style={{color: "white", fontWeight: "bold"}}>เจอได้ไอ้สัส</Text>
               </TouchableOpacity>
             </View>
