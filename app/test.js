@@ -74,57 +74,25 @@ function Testing() {
   let clonemyField = myUnit;
   let cloneenemyField = EnemyUnit;
 
-  database().ref(`/Test/myUnit`)
-    .on('value', snapshot => {
-      clonemyField = myUnit;
-        setmyUnit(snapshot.val())
-        console.log(1)
-        // console.log(JSON.stringify(snapshot.val())+"\n"+
-        // JSON.stringify(myUnit))
+    useEffect(async () => {
+      database().ref(`/Test/myUnit`)
+      .on('value', snapshot => {
+        clonemyField = myUnit;
+          setmyUnit(snapshot.val())
+          console.log(snapshot.val())
+          // console.log(JSON.stringify(snapshot.val())+"\n"+
+          // JSON.stringify(myUnit))
       
     });
-    database().ref(`/Test/enemyUnit`)
-    .on('value', snapshot => {
-      cloneenemyField = EnemyUnit;
-        setEnemyUnit(snapshot.val())
-        // console.log(JSON.stringify(snapshot.val())+"\n"+
-        // JSON.stringify(EnemyUnit))
-        console.log(2)
+      database().ref(`/Test/enemyUnit`)
+      .on('value', snapshot => {
+        cloneenemyField = EnemyUnit;
+          setEnemyUnit(snapshot.val())
+          // console.log(JSON.stringify(snapshot.val())+"\n"+
+          // JSON.stringify(EnemyUnit))
+          console.log(snapshot.val())
     });
-
-
-  // database().ref('/Test/enemyUnit/0').on('value', snapshot => {
-  //   // console.log("1:"+snapshot.val()+" "+EnemyUnit[0].hp);
-  //   if(snapshot.exists() && EnemyUnit[0].hp !== snapshot.val().hp){
-  //      console.log("1:"+snapshot.val());
-  //   }
-  // });
-  // database().ref('/Test/enemyUnit/1').on('value', snapshot => {
-  //   // console.log("2:"+snapshot.val()+" "+EnemyUnit[1].hp);
-  //   if(snapshot.exists() && EnemyUnit[1].hp !== snapshot.val().hp){
-  //      console.log("2:"+snapshot.val().hp+" "+EnemyUnit[1].hp);
-  //   }
-  // });
-  // database().ref('/Test/enemyUnit/2').on('value', snapshot => {
-  //   // console.log("3:"+snapshot.val()+" "+EnemyUnit[2].hp);
-  //   if(snapshot.exists() && EnemyUnit[2].hp !== snapshot.val().hp){
-  //      console.log("3:"+snapshot.val());
-  //   }
-  // });
-  // database().ref('/Test/enemyUnit/3').on('value', snapshot => {
-  //   // console.log("4:"+snapshot.val()+" "+EnemyUnit[3].hp);
-  //   if(snapshot.exists() && EnemyUnit[3].hp !== snapshot.val().hp){
-  //      console.log("4:"+snapshot.val());
-  //   }
-  // });
-  // database().ref('/Test/enemyUnit/4').on('value', snapshot => {
-  //   // console.log("5:"+snapshot.val()+" ");
-  //   if(snapshot.exists() && EnemyUnit[4].hp !== snapshot.val().hp){
-  //      console.log("5:"+snapshot.val());
-  //   }
-  // });
-
-
+    },[])
 
   const drawCard = () => {
     let newdeck = Deck;
@@ -256,6 +224,7 @@ function Testing() {
       setMageAttacking([...MageAttacking, index]); setMana(Mana-2);
     }
     // console.log(updatedUnit)
+    await _setFieldUnit(EnemyUnit, updatedUnit)
     setmyUnit(updatedUnit)
   }
 
