@@ -193,12 +193,15 @@ const styles = StyleSheet.create({
   },
   textinbutton:{
     color:"#FFFFFF",
-    fontWeight:'bold',
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily: "MEGLORIA",
+    fontSize:20,
   },
   fontWelcome:{
-    backgroundColor:'rgba(71, 66, 66, 0.5)'
-    ,fontSize:20,borderRadius:10
+    backgroundColor:'rgba(71, 66, 66, 0.5)',
+    fontSize:20,
+    borderRadius:10,
+    fontFamily: "MEGLORIA"
   },
   imgUser:{
     backgroundColor:"rgba(83, 72, 79, 0.4)",

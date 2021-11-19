@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Text, View, StyleSheet  } from "react-native";
+import { Button, Text, View, StyleSheet,ImageBackground} from "react-native";
 import { database } from './database/db';
 
 function MatchMaking({route, navigation}){
@@ -46,11 +46,26 @@ function MatchMaking({route, navigation}){
   },[])
 
   return (
-    <View style={{alignItems:"center"}}>
-      <Text style={{fontSize: 60}}>{Loading}</Text>
-    </View>
+        <ImageBackground source={require('./assets/imggif/loading2.gif')} resizeMode="center" style={styles.imageBG}>
+          <View style={styles.jst_Center}>
+            <Text style={styles.fontLoading}>{Loading}</Text>
+            {/* <Text style={styles.fontLoading}>{Loading}</Text> */}
+          </View>
+        </ImageBackground>
   )
 }
 
+const styles = StyleSheet.create({
+  imageBG:{
+    flex:1,
+  },
+  jst_Center:{
+    flex:1,
+    alignItems:"center",
+  },
+  fontLoading:{
+    fontSize:60,
+  }
+})
 
 export default MatchMaking;
