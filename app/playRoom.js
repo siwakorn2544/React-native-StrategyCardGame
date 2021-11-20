@@ -244,7 +244,7 @@ function PlayRoom({route , navigation}){
         return (<MyHand atk={data.item.atks} hp={data.item.hps} 
             id={data.item.imgURL} Class={data.item.Classes} index={data.index} cost={data.item.cost}
             summonUnit = { summonCard }/>)
-      }  
+      }
     }
 
     const MaxManaGem = () => {
@@ -419,7 +419,7 @@ function PlayRoom({route , navigation}){
     }
 
     const checkdeath = (item) => {
-      return item.hp > 0;
+      return item.hp > 0 || item == "";
     }
 
 
@@ -481,7 +481,7 @@ function PlayRoom({route , navigation}){
                       width: 300,
                       alignItems: "flex-start"
                   }}>
-                    { (Player02.Field[0] != ""  && Player02.Field != []) &&
+                    { ( Player02.Field != []) &&
                         <FlatList
                         data={Player02.Field}
                         renderItem={fieldEnemy}
@@ -500,7 +500,7 @@ function PlayRoom({route , navigation}){
                       width: 300,
                       alignItems: "flex-start"
                   }}>
-                  { (Player01.Field[0] != ""  && Player01.Field != []) &&
+                  { (Player01.Field != []) &&
                     <FlatList
                       data={Player01.Field}
                       renderItem={fieldUser}
@@ -511,7 +511,7 @@ function PlayRoom({route , navigation}){
                 </View>
               </View>
               <View style={{height: "20%",marginHorizontal: 30, alignItems: "center"}}>
-                  { (Player01.Hand[0] != ""  && Player01.Hand != []) &&
+                  { (Player01.Hand != []) &&
                   <FlatList
                     data={Player01.Hand}
                     renderItem={myHand}

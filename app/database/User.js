@@ -109,7 +109,7 @@ async function getCardInformation(ID) {
 }
 
 async function _setFieldUnit(enemy, user, roomID, UIDEnemy, UIDUser) {
-    for (let index = 0; index < 5; index++) {
+    for (let index = 1; index < 6; index++) {
         if (index < enemy.length){
             var enemyCard = new Object({
                 atk: enemy[index].atk, 
