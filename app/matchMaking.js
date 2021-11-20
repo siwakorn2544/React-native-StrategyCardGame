@@ -21,7 +21,7 @@ function MatchMaking({route, navigation}){
         .ref(`/Queue/${route.params.UID}`)
         .on('value', snapshot => {
             //มีการเปลี่ยนค่า
-            if (snapshot.val() != ""){
+            if (snapshot.val() != "" && snapshot.val() != null){
               setLoading("Match Found!");
               setRoomID(snapshot.val());
               console.log("roomID: ", snapshot.val());

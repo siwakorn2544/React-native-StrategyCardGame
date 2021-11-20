@@ -13,7 +13,6 @@ function Testing() {
   const [Mana,setMana] = useState(1);
   const [LP_1, setlife1] = useState(20);
   const [LP_2, setlife2] = useState(20);
-  const parse = 1;
   const [Deck, setDeck] = useState([["0001.jpg",["Defender","Knight"],[5,7],[10,5]]])
 
   const pan = useRef(new Animated.ValueXY()).current; //step01

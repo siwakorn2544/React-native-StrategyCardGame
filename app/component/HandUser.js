@@ -40,8 +40,7 @@ export default function MyHand(props) {
     }
 
     useEffect(() =>{
-        // console.log(props.Class)
-         image()
+        image()
     },[])
 
     return (

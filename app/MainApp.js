@@ -14,13 +14,13 @@ function MyApp() {
   return (
     <NavigationContainer >
       <Stack.Navigator 
-        // initialRouteName="LogIn"
-        initialRouteName="Test"
+        initialRouteName="LogIn"
+        // initialRouteName="Test"
         screenOptions={{
           headerShown: false
         }}
       >
-        <Stack.Screen name="Test" component={Testing} />
+        {/* <Stack.Screen name="Test" component={Testing} /> */}
         <Stack.Screen name="LogIn" component={LogIn} />
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="DeckC" component={DeckCreate} />
