@@ -35,15 +35,19 @@ function PlayRoom({route , navigation}){
         },
         onPanResponderRelease: async(e, gesture) => {
             drawCard();
-            // let newfield = Player01;
-            // for (let i = 0; i < newfield.Field.length; i++) {
-            //   newfield.Field[i].canAttack = 1;
-            // }
-            // await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/Field`).set(player.Field);
+            resetcanAttack();
             setPhase(1);
             setTextPhase("Main Phase");
         },
     }); //step02
+
+    const resetcanAttack = async() => {
+      let newfield = Player01.Field;
+      for (let i = 0; i < newfield.length; i++) {
+          newfield[i].canAttack = 1;
+      }
+            await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/Field`).set(newfield);
+    }
 
     const _setDataGame = async (id) => {
         let player01, player02;
