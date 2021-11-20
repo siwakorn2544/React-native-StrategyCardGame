@@ -218,14 +218,13 @@ function PlayRoom({route , navigation}){
         }}/>)
       }
 
-      const drawCard = () => {
+      const drawCard = async() => {
         let newdeck = Player01.Deck;
         let newHand = Player01.Hand;
           //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
           let todraw = await getCardInformation(newdeck[0]);
           newHand.push(todraw);
           newdeck.shift();
-        } 
         // await _asynsPlayer(route.params.UID);
         await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Hand`).set(newHand);
         await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Deck`).set(newdeck);
