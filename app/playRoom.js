@@ -67,7 +67,6 @@ function PlayRoom({route , navigation}){
     }
 
     const DrawCardStartGame = async (deck, i) => {
-        deck.Hand.shift();
         for (let index = 0; index < i; index++) {
                 //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
                 let todraw = await getCardInformation(deck.Deck[0]);
@@ -182,22 +181,22 @@ function PlayRoom({route , navigation}){
             });
 
           database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/LiftPoint`)
+            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/LifePoint`)
             .on('value', snapshot => {
                 console.log('LP 01: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player01
-                player.LiftPoint = snapshot.val()
+                player.LifePoint = snapshot.val()
                 setPlayer01(player);
             });
 
         database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/LiftPoint`)
+            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/LifePoint`)
             .on('value', snapshot => {
                 console.log('LP 02: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player02
-                player.LiftPoint = snapshot.val()
+                player.LifePoint = snapshot.val()
                 setPlayer02(player);
             });
 
@@ -208,6 +207,7 @@ function PlayRoom({route , navigation}){
 
     //component
     const fieldEnemy = (data) => {
+      if (data.index != 0){
         return (
             <FieldMonster 
                 index={data.index} target={targetAttack} 
@@ -215,27 +215,36 @@ function PlayRoom({route , navigation}){
                 HP={data.item.hp} Class={data.item.class} 
                 imgURL= {data.item.imgURL} 
             />)
+      }
         // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
     }
     
     const fieldUser = (data) => {
+      if (data.index != 0){
         return (
             <FieldMonster 
                 index = {data.index} target = {handleFieldAction} 
                 width = {-1} ATK={data.item.atk} HP = {data.item.hp} 
                 Class = {data.item.class} imgURL = {data.item.imgURL} 
             />)
+      }
+        
         // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
     }
     
     const handEnemy = (data) => {
+      if (data.index != 0){
         return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInHand}/>)
+      }
+        
     }
     
     const myHand = (data) => {
+      if (data.index != 0){
         return (<MyHand atk={data.item.atks} hp={data.item.hps} 
             id={data.item.imgURL} Class={data.item.Classes} index={data.index} cost={data.item.cost}
             summonUnit = { summonCard }/>)
+      }  
     }
 
     const MaxManaGem = () => {
@@ -299,9 +308,6 @@ function PlayRoom({route , navigation}){
           var player = Player01
           var isberserk = (classSelect == "Berserker") ? 1 : 0;
           //change Field
-          if (player.Field[0] == ""){
-              player.Field = []
-          }
           let newUnit = new Object({class: classSelect, imgURL: img, canAttack: isberserk, hp: hp, atk: atk});
           player.Field = [...player.Field, newUnit]
           console.log('Field: ', player.Field);
@@ -334,7 +340,7 @@ function PlayRoom({route , navigation}){
             else if(Phase == 2 && Player01.Field[index].canAttack >= 1){
               var isHaveDefender = Player02.Field.some((u) => u.class == "Defender");
               var newColorfield = [0,0,0,0,0];
-              for (let i = 0; i < Player02.Field.length; i++) {
+              for (let i = 1; i < Player02.Field.length; i++) {
                 if((!isHaveDefender || Player02.Field[i].class  == "Defender") ||  Player01.Field[index].class == "Ranger"){
                   newColorfield[i] = 2;
                 }
@@ -353,7 +359,7 @@ function PlayRoom({route , navigation}){
           updatedUnit[index].canAttack++; newMana -= 1;
         }
         else if(Class == "Healer" && Player01.Mana >= 2){
-          for (let i = 0; i < updatedUnit.length; i++) {
+          for (let i = 1; i < updatedUnit.length; i++) {
             let carddata = await firestore().collection('CardList').doc(updatedUnit[i].imgURL.split('.')[0]).get() //???
             var maxHpOfCard = carddata._data.Classes.indexOf(updatedUnit[i].class)
             // console.log(cardata._data.hps[a], updatedUnit[i].hp+updatedUnit[index].atk)
@@ -373,7 +379,7 @@ function PlayRoom({route , navigation}){
         }
         // console.log(updatedUnit)
         await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/Mana`).set(newMana);
-        await _setFieldUnit(Player02.Field, updatedUnit);
+        await _setFieldUnit(Player02.Field, updatedUnit, route.params.roomID, UID_02, UID_01);
     }
 
     const Attack = (index1, index2) => {
@@ -399,10 +405,12 @@ function PlayRoom({route , navigation}){
     async function updateField(p1, p2){
       var MyUnit = p1.filter(checkdeath);
       var enemyUnit = p2.filter(checkdeath);
-      let newlife1 = Player01.LiftPoint-(Player01.Field.length-MyUnit.length);
+      let newlife1 = Player01.LifePoint-(Player01.Field.length-MyUnit.length);
+      console.log(newlife1)
       await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/LifePoint`).set(newlife1);
   
-      let newlife2 = Player02.LiftPoint-(Player02.Field.length-enemyUnit.length);
+      let newlife2 = Player02.LifePoint-(Player02.Field.length-enemyUnit.length);
+      console.log(newlife2)
       await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_02}/LifePoint`).set(newlife2);
   
       // setPlayer02(player02); setPlayer01(player01);
@@ -438,7 +446,7 @@ function PlayRoom({route , navigation}){
                       <View style={styles.NameTagBox}>
                         <Text style={styles.NameTag}>{Player02.name}</Text>
                       </View>
-                      <Text style={styles.lifepoint}>{Player02.LiftPoint}</Text>
+                      <Text style={styles.lifepoint}>{Player02.LifePoint}</Text>
                   </ImageBackground>
                 </View>
                 <View style={{height: "25%", width: 80}}>
@@ -446,7 +454,7 @@ function PlayRoom({route , navigation}){
                     <View style={styles.NameTagBox}>
                       <Text style={styles.NameTag}>{Player01.name}</Text>
                     </View> 
-                      <Text style={styles.lifepoint}>{Player01.LiftPoint}</Text>
+                      <Text style={styles.lifepoint}>{Player01.LifePoint}</Text>
                   </ImageBackground>
                 </View>
               </View>
