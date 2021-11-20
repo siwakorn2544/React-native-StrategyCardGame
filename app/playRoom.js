@@ -15,7 +15,7 @@ function PlayRoom({route , navigation}){
     const [Turn, setTurn] = useState("");
     
     //Local Varible
-    const [Phase, setPhase] = useState(1);
+    const [Phase, setPhase] = useState(0);
     const [Attacking, setAttacking] = useState(null);
     const [selectedfield, setFieldColor] = useState([0,0,0,0,0]);
     const [MageAttacking, setMageAttacking] = useState([]);
@@ -209,13 +209,26 @@ function PlayRoom({route , navigation}){
                     // player.Hand = newHand
                     console.log('Hand: ', newHand);
 
-                    setPlayer01(player)
+                    // setPlayer01(player)
                     try {
                         await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Field`).set(player.Field);
                         // await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Hand`).set(player.Hand);
                     } catch(e){console.log(e)}
                 }
         }}/>)
+      }
+
+      const drawCard = () => {
+        let newdeck = Player01.Deck;
+        let newHand = Player01.Hand;
+          //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
+          let todraw = await getCardInformation(newdeck[0]);
+          newHand.push(todraw);
+          newdeck.shift();
+        } 
+        // await _asynsPlayer(route.params.UID);
+        await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Hand`).set(newHand);
+        await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Deck`).set(newdeck);
       }
     
       const MaxManaGem = () => {
@@ -387,7 +400,7 @@ function PlayRoom({route , navigation}){
               <View style={{height: "20%",marginHorizontal: 30, alignItems: "center"}}>
               { (Player02.Hand != []) &&
                   <FlatList
-                    data={Player02.Hand}
+                    data={Object.values(Player02.Hand)}
                     renderItem={handEnemy}
                     numColumns={6}
                     style={styles.handStyle}
@@ -454,7 +467,8 @@ function PlayRoom({route , navigation}){
                 <View style={{height: 100, width: 100, borderRadius: 100, marginLeft: 30 ,backgroundColor: "white"}}>
                   <TouchableOpacity onPress={() => nextPhase()} style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
                       <Text style={{color: "white", fontWeight: "bold"}}>
-                        {(Turn == Player01.UID) ? "เจอได้ไอ้สัส" : `ไม่ใช่เทิร์นมึงนั่งเฉยๆไปไอ้ควาย`}
+                        {/* {(Turn == Player01.UID) ? "เจอได้ไอ้สัส" : `ไม่ใช่เทิร์นมึงนั่งเฉยๆไปไอ้ควาย`} */}
+                        { Turn+" : "+Phase  }
                       </Text>
                   </TouchableOpacity>
                 </View>
