@@ -99,3 +99,4 @@ android/app/src/main/assets/fonts/AntDesign.ttf
 *.json
 app/toupload.js
 functions/
+app/dummy.js

@@ -19,6 +19,7 @@ function PlayRoom({route , navigation}){
     const [Attacking, setAttacking] = useState(null);
     const [selectedfield, setFieldColor] = useState([0,0,0,0,0]);
     const [MageAttacking, setMageAttacking] = useState([]);
+    const [TextPhase, setTextPhase] = useState("Draw Phase");
 
     //Animation DrawCard
     const pan = useRef(new Animated.ValueXY()).current; //step01
@@ -32,6 +33,13 @@ function PlayRoom({route , navigation}){
         },
         onPanResponderRelease: (e, gesture) => {
             drawCard();
+            let newfield = Player01;
+            for (let i = 0; i < newfield.Field.length; i++) {
+              newfield.Field[i].canAttack = 1;
+            }
+            await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Field`).set(player.Field);
+            setPhase(1);
+            setTextPhase("Main Phase");
         },
     }); //step02
 
@@ -47,9 +55,6 @@ function PlayRoom({route , navigation}){
             }
         }
         console.log(player02)
-        setTurn(defaultGameData.Turn);
-        setPlayer02(player02);
-        setPlayer01(player01);
         return [player01, player02]
     }
 
@@ -60,11 +65,10 @@ function PlayRoom({route , navigation}){
                 let todraw = await getCardInformation(deck.Deck[0]);
                 deck.Hand.push(todraw);
                 deck.Deck.shift();
-            } 
+        } 
             // await _asynsPlayer(route.params.UID);
             await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Hand`).set(deck.Hand);
             await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Deck`).set(deck.Deck);
-            setPlayer01(deck)
     }
 
     useEffect(async () => {
@@ -75,24 +79,31 @@ function PlayRoom({route , navigation}){
         database()
             .ref(`PlayRoom/${route.params.roomID}/Turn`)
             .on('value', snapshot => {
+              if (snapshot.val() == players[0].UID){
+                setPhase(0);
+                setTextPhase("Draw Phase")
+                await database.ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`).set(Player01.MaxMana);
+              }
                 console.log("Turn: ", snapshot.val());
-                if (snapshot.val() != null){
-                    setTurn(snapshot.val());
-                }           
+                setTurn(snapshot.val());          
         });
 
         database()
             .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/MaxMana`)
             .on('value', snapshot => {
                 //render ค่าใหม่
-                Player01.MaxMana = snapshot.val();
+                var player = Player01
+                player.MaxMana = snapshot.val()
+                setPlayer01(player)
         });
 
         database()
             .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`)
             .on('value', snapshot => {
                 //render ค่าใหม่
-                Player01.Mana = snapshot.val();
+                var player = Player01
+                player.Mana = snapshot.val()
+                setPlayer01(player)
         });
 
         database()
@@ -141,7 +152,7 @@ function PlayRoom({route , navigation}){
                 console.log('LP 01: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player01
-                player.Hand = snapshot.val()
+                player.LiftPoint = snapshot.val()
                 setPlayer01(player);
             });
 
@@ -151,13 +162,14 @@ function PlayRoom({route , navigation}){
                 console.log('LP 02: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player02
-                player.Hand = snapshot.val()
+                player.LiftPoint = snapshot.val()
                 setPlayer02(player);
             });
 
         await DrawCardStartGame(players[0], 3);
     }, [])
 
+    //component
     const fieldEnemy = (data) => {
         return (
             <FieldMonster 
@@ -167,12 +179,6 @@ function PlayRoom({route , navigation}){
                 imgURL= {data.item.imgURL} 
             />)
         // return (<Image source={require("./assets/backCard.jpg")} style={styles.cardInField}/>)
-    }
-
-    const targetAttack = (index) => {
-        if((Phase == 2 && Attacking != null) && Turn == Player01.UID){
-          Attack(Attacking, index);
-        }
     }
     
     const fieldUser = (data) => {
@@ -191,77 +197,94 @@ function PlayRoom({route , navigation}){
     
     const myHand = (data) => {
         return (<MyHand atk={data.item.atks} hp={data.item.hps} 
-            id={data.item.imgURL} Class={data.item.Classes} index={data.index} 
-            summonUnit = {async (classSelect, img, index, atk, hp) => {
-                if(Turn == Player01.UID){
-                    var player = Player01
-                    var isberserk = classSelect == "Berserker" ? 1 : 0;
-                    //change Field
-                    if (player.Field[0] == ""){
-                        player.Field = []
-                    }
-                    let newUnit = {class: classSelect, imgURL: img, canAttack: isberserk, hp: hp, atk: atk};
-                    player.Field = [...player.Field, newUnit]
-                    console.log('Field: ', player.Field);
-                    //change Hand
-                    let newHand = Player01.Hand;
-                    // newHand.splice(index, 1)
-                    // player.Hand = newHand
-                    console.log('Hand: ', newHand);
+            id={data.item.imgURL} Class={data.item.Classes} index={data.index} cost={data.item.cost}
+            summonUnit = { summonCard }/>)
+    }
 
-                    // setPlayer01(player)
-                    try {
-                        await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Field`).set(player.Field);
-                        // await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Hand`).set(player.Hand);
-                    } catch(e){console.log(e)}
-                }
-        }}/>)
-      }
-
-      const drawCard = async() => {
-        let newdeck = Player01.Deck;
-        let newHand = Player01.Hand;
-          //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
-          let todraw = await getCardInformation(newdeck[0]);
-          newHand.push(todraw);
-          newdeck.shift();
-        // await _asynsPlayer(route.params.UID);
-        await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Hand`).set(newHand);
-        await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Deck`).set(newdeck);
-      }
-    
-      const MaxManaGem = () => {
-        let components = []
-        for (let i = 1; i < Player01.MaxMana+1; i++) {
-          if (i > Player01.Mana){
-            components.push(<Image source={require("./assets/mana(use).png")}  style = { styles.mana } key = {"mana-"+i} />)
-          }
-          else if (i <= Player01.Mana){
-            components.push(<Image source={require("./assets/mana.png")} style = { styles.mana } key = {"mana-"+i}/>)
-          }
+    const MaxManaGem = () => {
+      let components = []
+      for (let i = 1; i < Player01.MaxMana+1; i++) {
+        if (i > Player01.Mana){
+          components.push(<Image source={require("./assets/mana(use).png")}  style = { styles.mana } key = {"mana-"+i} />)
         }
-        return (components.map((value) => {return value}));
+        else if (i <= Player01.Mana){
+          components.push(<Image source={require("./assets/mana.png")} style = { styles.mana } key = {"mana-"+i}/>)
+        }
       }
-    
-      const nextPhase = async () => {
-        if(Turn == Player01.UID){
-          if(Phase+1 == 2){
-            setPhase(Phase+1);
-            console.log(2)
-          }
-          else if(Phase+1 == 3){
-            await database().ref(`/PlayRoom/${route.params.roomID}/Turn`).set(Player02.UID);
-            console.log("End")
-            if(MaxMana < 6){
-              var newmax = MaxMana+1;
-              await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/MaxMana`).set(newmax);
-            }
-            setPhase(0);
+      return (components.map((value) => {return value}));
+    }
+
+    //function
+    const drawCard = async() => {
+      var newdeck = Player01.Deck;
+      var newHand = Player01.Hand;
+        //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
+      var todraw = await getCardInformation(newdeck[0]);
+        newHand.push(todraw);
+        newdeck.shift();
+  
+      await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Hand`).set(newHand);
+      await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Deck`).set(newdeck);
+    }
+
+
+    const targetAttack = (index) => {
+        if((Phase == 2 && Attacking != null) && (Turn == Player01.UID)){
+          Attack(Attacking, index);
+        }
+    }
+
+    const nextPhase = async () => {
+      if(Turn == Player01.UID){
+        if(Phase+1 == 2){
+          setPhase(Phase+1);
+          setTextPhase("Battle Phase")
+          console.log(2)
+        }
+        else if(Phase+1 == 3){
+          await database().ref(`/PlayRoom/${route.params.roomID}/Turn`).set(Player02.UID);
+          setTextPhase("Enemy Turn")
+          console.log("End")
+          if(MaxMana < 6){
+            var newmax = MaxMana+1;
+            await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/MaxMana`).set(newmax);
           }
         }
       }
-    
-      const handleFieldAction = (index) => {
+    }
+
+    const summonCard = async (classSelect, img, index, atk, hp, cost) => {
+      if(Turn == Player01.UID){
+        if(Player01.Mana >= cost){
+          var player = Player01
+          var isberserk = (classSelect == "Berserker") ? 1 : 0;
+          //change Field
+          if (player.Field[0] == ""){
+              player.Field = []
+          }
+          let newUnit = new Object({class: classSelect, imgURL: img, canAttack: isberserk, hp: hp, atk: atk});
+          player.Field = [...player.Field, newUnit]
+          console.log('Field: ', player.Field);
+          //change Hand
+          let newHand = Player01.Hand;
+            // newHand.splice(index, 1)
+          newHand = player.Hand.filter((i, index_i) => index_i != index);
+          player.Hand = newHand
+          console.log('Hand: ', newHand);
+
+          player.Mana -= cost;
+          
+          try {
+              await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Mana`).set(player.Mana);
+              await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Field`).set(player.Field);
+              await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Hand`).set(player.Hand);
+          } catch(e){console.log(e)}
+        }
+          
+        }
+      }
+
+    const handleFieldAction = (index) => {
         // console.log(index)
         if(Turn == Player01.UID){
           if(Player01.Field[index]){
@@ -282,71 +305,26 @@ function PlayRoom({route , navigation}){
           }
         }
       }
-    
-      const Attack = (index1, index2) => {
-        if(Phase == 2){
-            let enemyUnit = Player02.Field;
-            if(MageAttacking.indexOf(index1) != -1){
-              for (let i = 0; i < enemyUnit.length; i++) {
-                enemyUnit[i].hp -= Player01.Field[index1].atk;
-              }
-              setMageAttacking(MageAttacking.filter((i) => i == MageAttacking.indexOf(index1)))
-            }else{
-                enemyUnit[index2].hp -= Player01.Field[index1].atk;
-            }
-            var player01 = Player01
-            player01.Field[index1].canAttack -= 1;
 
-            var player02 = Player02
-            player02.Field = enemyUnit
-
-            setFieldColor([0,0,0,0,0]);
-            setPlayer01([...player01]);
-            setPlayer02(player02)
-
-            updateField();
-        }
-      }
-    
-      async function updateField(){
-        const enemyUnit = Player02.Field.filter(checkdeath);
-        const MyUnit = Player01.Field.filter(checkdeath);
-        let newlife1 = Player01.LiftPoint-(Player01.Field.length-Player01.Field.length);
-        await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/LifePoint`).set(newlife1);
-
-        let newlife2 = Player02.LiftPoint-(Player02.Field.length-Player02.Field.length);
-        await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player02.UID}/LifePoint`).set(newlife2);
-
-        var player01 = Player01; var player02 = Player02;
-        player02.Field = enemyUnit
-        setPlayer02(player02); setPlayer01(player01);
-        await _setFieldUnit(player02, player01)
-        // updated2 = true;
-      }
-    
-      const checkdeath = (item) => {
-          return item.hp > 0;
-      }
-    
-      const useSkill = async (index, Class) => {
+    const useSkill = async (index, Class) => {
         let updatedUnit = Player01.Field;
         let newMana = Player01.Mana;
         if(Class == "Knight" && Player01.Mana >= 1){
-          updatedUnit[index].canAttack++; newMana-=1;
+          updatedUnit[index].canAttack++; newMana -= 1;
         }
         else if(Class == "Healer" && Player01.Mana >= 2){
           for (let i = 0; i < updatedUnit.length; i++) {
-            let cardata = await firestore().collection('CardList').doc(updatedUnit[i].imgURL.split('.')[0]).get() //???
-            var maxhpofcard = cardata._data.Classes.indexOf(updatedUnit[i].class)
+            let carddata = await firestore().collection('CardList').doc(updatedUnit[i].imgURL.split('.')[0]).get() //???
+            var maxHpOfCard = carddata._data.Classes.indexOf(updatedUnit[i].class)
             // console.log(cardata._data.hps[a], updatedUnit[i].hp+updatedUnit[index].atk)
-            if(cardata._data.hps[maxhpofcard] >= updatedUnit[i].hp+updatedUnit[index].atk){
+            if(carddata._data.hps[maxHpOfCard] >= updatedUnit[i].hp+updatedUnit[index].atk){
               updatedUnit[i].hp += updatedUnit[i].class != "Healer" ? updatedUnit[index].atk : 0;
             }else{
-              updatedUnit[i].hp = updatedUnit[i].class != "Healer" ? cardata._data.hps[maxhpofcard] : updatedUnit[i].hp;
+              updatedUnit[i].hp = updatedUnit[i].class != "Healer" ? carddata._data.hps[maxHpOfCard] : updatedUnit[i].hp;
             }
           }
           updatedUnit[index].canAttack = 0;
-          newMana-=2;
+          newMana -= 2;
         }
         else if(Class == "Mage" && Player01.Mana >= 1){
           setMageAttacking([...MageAttacking, index]); newMana-=2;
@@ -354,11 +332,47 @@ function PlayRoom({route , navigation}){
         // console.log(updatedUnit)
         await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/Mana`).set(newMana);
         await _setFieldUnit(Player02.Field, updatedUnit);
-        var player01 = Player01;
-        player01.Field = updatedUnit;
-        setPlayer01(player01);
+    }
+
+    const Attack = (index1, index2) => {
+      if(Phase == 2){
+          let enemyUnit = Player02.Field;
+          if(MageAttacking.indexOf(index1) != -1){
+            for (let i = 0; i < enemyUnit.length; i++) {
+              enemyUnit[i].hp -= Player01.Field[index1].atk;
+            }
+            setMageAttacking(MageAttacking.filter((i) => i == MageAttacking.indexOf(index1)))
+          }else{
+              enemyUnit[index2].hp -= Player01.Field[index1].atk;
+          }
+          var player01 = Player01
+          player01.Field[index1].canAttack -= 1;
+  
+          setFieldColor([0,0,0,0,0]);
+  
+          updateField(player01.Field, enemyUnit);
       }
-    
+    }
+
+    async function updateField(p1, p2){
+      var MyUnit = p1.filter(checkdeath);
+      var enemyUnit = p2.filter(checkdeath);
+      let newlife1 = Player01.LiftPoint-(Player01.Field.length-MyUnit.length);
+      await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player01.UID}/LifePoint`).set(newlife1);
+  
+      let newlife2 = Player02.LiftPoint-(Player02.Field.length-enemyUnit.length);
+      await database().ref(`/PlayRoom/${route.params.roomID}/players/${Player02.UID}/LifePoint`).set(newlife2);
+  
+      // setPlayer02(player02); setPlayer01(player01);
+      await _setFieldUnit(enemyUnit, MyUnit)
+      // updated2 = true;
+    }
+
+    const checkdeath = (item) => {
+      return item.hp > 0;
+    }
+
+
       return (
           <ImageBackground source={require("./assets/bg.jpg")} resizeMode="cover" style={styles.background}>
           <View style={{ flex: 1 , flexDirection: "row"}}>
@@ -466,8 +480,7 @@ function PlayRoom({route , navigation}){
                 <View style={{height: 100, width: 100, borderRadius: 100, marginLeft: 30 ,backgroundColor: "white"}}>
                   <TouchableOpacity onPress={() => nextPhase()} style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
                       <Text style={{color: "white", fontWeight: "bold"}}>
-                        {/* {(Turn == Player01.UID) ? "เจอได้ไอ้สัส" : `ไม่ใช่เทิร์นมึงนั่งเฉยๆไปไอ้ควาย`} */}
-                        { Turn+" : "+Phase  }
+                        { TextPhase  }
                       </Text>
                   </TouchableOpacity>
                 </View>

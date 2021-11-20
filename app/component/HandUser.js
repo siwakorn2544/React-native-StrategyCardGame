@@ -52,7 +52,7 @@ export default function MyHand(props) {
                         <Button 
                             title="►SELECT◄" 
                             color="#B91646"
-                            onPress={() => {props.summonUnit(props.Class[0],props.id,props.index,props.atk[0],props.hp[0]); setShow(false);}}
+                            onPress={() => {props.summonUnit(props.Class[0],props.id,props.index,props.atk[0],props.hp[0],props.cost); setShow(false);}}
                         />
                     </View>
                     <View style={{flexDirection: "row"}}>
@@ -67,7 +67,7 @@ export default function MyHand(props) {
                         <Button 
                             title="►SELECT◄" 
                             color="#B91646"
-                            onPress={() => {props.summonUnit(props.Class[1],props.id,props.index,props.atk[1],props.hp[1]); setShow(false);}}
+                            onPress={() => {props.summonUnit(props.Class[1],props.id,props.index,props.atk[1],props.hp[1],props.cost); setShow(false);}}
                         />
                     </View>
                 </View>
