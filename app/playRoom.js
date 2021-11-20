@@ -46,6 +46,7 @@ function PlayRoom({route , navigation}){
                 player02 = values
             }
         }
+        console.log(player02)
         setTurn(defaultGameData.Turn);
         setPlayer02(player02);
         setPlayer01(player01);
@@ -97,7 +98,7 @@ function PlayRoom({route , navigation}){
         database()
             .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Field`)
             .on('value', snapshot => {
-                // console.log('field 01: ', snapshot.val());
+                console.log('field 01: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player01
                 player.Field = snapshot.val()
@@ -107,7 +108,7 @@ function PlayRoom({route , navigation}){
         database()
             .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/Field`)
             .on('value', snapshot => {
-                // console.log('field 02: ', snapshot.val());
+                console.log('field 02: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player02
                 player.Field = snapshot.val()
@@ -117,7 +118,7 @@ function PlayRoom({route , navigation}){
         database()
             .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Hand`)
             .on('value', snapshot => {
-                // console.log('hand 01: ', snapshot.val());
+                console.log('hand 01: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player01
                 player.Hand = snapshot.val()
@@ -125,9 +126,29 @@ function PlayRoom({route , navigation}){
         });
 
         database()
-            .ref(`Playroom/${route.params.roomID}/players/${players[1].UID}/Hand`)
+            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/Hand`)
             .on('value', snapshot => {
-                // console.log('hand 02: ', snapshot.val());
+                console.log('hand 02: ', snapshot.val());
+                //render ค่าใหม่
+                var player = Player02
+                player.Hand = snapshot.val()
+                setPlayer02(player);
+            });
+
+          database()
+            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/LiftPoint`)
+            .on('value', snapshot => {
+                console.log('LP 01: ', snapshot.val());
+                //render ค่าใหม่
+                var player = Player01
+                player.Hand = snapshot.val()
+                setPlayer01(player);
+            });
+
+        database()
+            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/LiftPoint`)
+            .on('value', snapshot => {
+                console.log('LP 02: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player02
                 player.Hand = snapshot.val()
