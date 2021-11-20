@@ -367,7 +367,9 @@ function PlayRoom({route , navigation}){
           newMana -= 2;
         }
         else if(Class == "Mage" && Player01.Mana >= 1){
-          setMageAttacking([...MageAttacking, index]); newMana-=2;
+          if(!MageAttacking.includes(index)){
+            setMageAttacking([...MageAttacking, index]); newMana-=2;
+          }
         }
         // console.log(updatedUnit)
         await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/Mana`).set(newMana);
@@ -404,7 +406,7 @@ function PlayRoom({route , navigation}){
       await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_02}/LifePoint`).set(newlife2);
   
       // setPlayer02(player02); setPlayer01(player01);
-      await _setFieldUnit(enemyUnit, MyUnit)
+      await _setFieldUnit(enemyUnit, MyUnit, route.params.roomID, UID_02, UID_01);
       // updated2 = true;
     }
 

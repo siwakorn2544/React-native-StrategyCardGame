@@ -108,7 +108,7 @@ async function getCardInformation(ID) {
     return card._data
 }
 
-async function _setFieldUnit(enemy, user) {
+async function _setFieldUnit(enemy, user, roomID, UIDEnemy, UIDUser) {
     for (let index = 0; index < 5; index++) {
         if (index < enemy.length){
             var enemyCard = new Object({
@@ -130,8 +130,8 @@ async function _setFieldUnit(enemy, user) {
             });
         }      
         else { var userCard = null; }
-        await database().ref('/Test/enemyUnit').child(index+"").set(enemyCard);
-        await database().ref('/Test/myUnit').child(index+"").set(userCard);
+        await database().ref(`/PlayRoom/${roomID}/players/${UIDEnemy}/Field`).child(index+"").set(enemyCard);
+        await database().ref(`/PlayRoom/${roomID}/players/${UIDUser}/Field`).child(index+"").set(userCard);
     }
 }
 
