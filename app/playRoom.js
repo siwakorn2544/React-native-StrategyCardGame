@@ -15,11 +15,11 @@ function PlayRoom({route , navigation}){
     const [Turn, setTurn] = useState("");
     
     //Local Varible
-    const [Phase, setPhase] = useState(0);
+    const [Phase, setPhase] = useState(1);
     const [Attacking, setAttacking] = useState(null);
     const [selectedfield, setFieldColor] = useState([0,0,0,0,0]);
     const [MageAttacking, setMageAttacking] = useState([]);
-    const [TextPhase, setTextPhase] = useState("Draw Phase");
+    const [TextPhase, setTextPhase] = useState("Main Phase");
 
     //Animation DrawCard
     const pan = useRef(new Animated.ValueXY()).current; //step01
@@ -31,7 +31,7 @@ function PlayRoom({route , navigation}){
           const newVal =  (gesture.dx < maxVal) ? maxVal : ((gesture.dx > 0) ? 0 : gesture.dx);
           pan.setValue({x: newVal, y: 0 });
         },
-        onPanResponderRelease: (e, gesture) => {
+        onPanResponderRelease: async(e, gesture) => {
             drawCard();
             let newfield = Player01;
             for (let i = 0; i < newfield.Field.length; i++) {
@@ -78,11 +78,13 @@ function PlayRoom({route , navigation}){
         
         database()
             .ref(`PlayRoom/${route.params.roomID}/Turn`)
-            .on('value', snapshot => {
+            .on('value', async(snapshot) => {
               if (snapshot.val() == players[0].UID){
                 setPhase(0);
                 setTextPhase("Draw Phase")
-                await database.ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`).set(Player01.MaxMana);
+                await database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`).set(Player01.MaxMana);
+              }else{
+                setTextPhase("Enemy Turn")
               }
                 console.log("Turn: ", snapshot.val());
                 setTurn(snapshot.val());          
@@ -216,6 +218,7 @@ function PlayRoom({route , navigation}){
 
     //function
     const drawCard = async() => {
+      console.log(Player01.Deck);
       var newdeck = Player01.Deck;
       var newHand = Player01.Hand;
         //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
