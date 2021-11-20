@@ -54,6 +54,8 @@ function PlayRoom({route , navigation}){
                 player02 = values
             }
         }
+        setPlayer01(player01)
+        setPlayer02(player02)
         console.log(player02)
         return [player01, player02]
     }
@@ -73,8 +75,6 @@ function PlayRoom({route , navigation}){
 
     useEffect(async () => {
         let players = await _setDataGame(route.params.roomID);
-        setPlayer01(players[0])
-        setPlayer02(players[1])
         
         database()
             .ref(`PlayRoom/${route.params.roomID}/Turn`)
@@ -88,6 +88,33 @@ function PlayRoom({route , navigation}){
               }
                 console.log("Turn: ", snapshot.val());
                 setTurn(snapshot.val());          
+        });
+
+        database()
+            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Deck`)
+            .on('value', snapshot => {
+                //render ค่าใหม่
+                var player = Player01
+                player.Deck = snapshot.val()
+                setPlayer01(player)
+        });
+
+        database()
+            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/name`)
+            .on('value', snapshot => {
+                //render ค่าใหม่
+                var player = Player01
+                player.name = snapshot.val()
+                setPlayer01(player)
+        });
+
+        database()
+            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/name`)
+            .on('value', snapshot => {
+                //render ค่าใหม่
+                var player = Player01
+                player.name = snapshot.val()
+                setPlayer01(player)
         });
 
         database()
@@ -218,7 +245,7 @@ function PlayRoom({route , navigation}){
 
     //function
     const drawCard = async() => {
-      console.log(Player01.Deck);
+      console.log(Player01);
       var newdeck = Player01.Deck;
       var newHand = Player01.Hand;
         //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
