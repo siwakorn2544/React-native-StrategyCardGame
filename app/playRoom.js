@@ -75,20 +75,6 @@ function PlayRoom({route , navigation}){
 
     useEffect(async () => {
         let players = await _setDataGame(route.params.roomID);
-        
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/Turn`)
-            .on('value', async(snapshot) => {
-              if (snapshot.val() == players[0].UID){
-                setPhase(0);
-                setTextPhase("Draw Phase")
-                await database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`).set(Player01.MaxMana);
-              }else{
-                setTextPhase("Enemy Turn")
-              }
-                console.log("Turn: ", snapshot.val());
-                setTurn(snapshot.val());          
-        });
 
         database()
             .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Deck`)
@@ -112,7 +98,7 @@ function PlayRoom({route , navigation}){
             .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/name`)
             .on('value', snapshot => {
                 //render ค่าใหม่
-                var player = Player01
+                var player = Player02
                 player.name = snapshot.val()
                 setPlayer01(player)
         });
@@ -124,6 +110,20 @@ function PlayRoom({route , navigation}){
                 var player = Player01
                 player.MaxMana = snapshot.val()
                 setPlayer01(player)
+        });
+
+        database()
+            .ref(`PlayRoom/${route.params.roomID}/Turn`)
+            .on('value', async(snapshot) => {
+              if (snapshot.val() == players[0].UID){
+                setPhase(0);
+                setTextPhase("Draw Phase")
+                await database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`).set(Player01.MaxMana);
+              }else{
+                setTextPhase("Enemy Turn")
+              }
+                console.log("Turn: ", snapshot.val());
+                setTurn(snapshot.val());          
         });
 
         database()
@@ -246,15 +246,17 @@ function PlayRoom({route , navigation}){
     //function
     const drawCard = async() => {
       console.log(Player01);
-      var newdeck = Player01.Deck;
-      var newHand = Player01.Hand;
+      var newdeck = new Object(Player01.Deck);
+      var newHand = new Object(Player01.Hand);
         //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
       var todraw = await getCardInformation(newdeck[0]);
         newHand.push(todraw);
         newdeck.shift();
+        console.log("Hand: ", newHand);
+        console.log("Deck: ", newdeck);
   
-      await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Hand`).set(newHand);
-      await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Deck`).set(newdeck);
+      await database().ref(`PlayRoom/${route.params.roomID}/players/${Player01.UID}/Hand`).set(newHand);
+      await database().ref(`PlayRoom/${route.params.roomID}/players/${Player01.UID}/Deck`).set(newdeck);
     }
 
 
