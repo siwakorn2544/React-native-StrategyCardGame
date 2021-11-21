@@ -199,6 +199,15 @@ function PlayRoom({route , navigation}){
                 player.LifePoint = snapshot.val()
                 setPlayer02(player);
             });
+            
+        database()
+            .ref(`PlayRoom/${route.params.roomID}/conclusion`)
+            .on('value', snapshot => {
+                //render ค่าใหม่
+                if(snapshot.val() != ""){
+                  gameEnd(snapshot.val());
+                }
+            });
 
         setUID1(players[0].UID);
         setUID2(players[1].UID);
@@ -338,15 +347,20 @@ function PlayRoom({route , navigation}){
               useSkill(index, Player01.Field[index].class);
             }
             else if(Phase == 2 && Player01.Field[index].canAttack >= 1){
-              var isHaveDefender = Player02.Field.some((u) => u.class == "Defender");
-              var newColorfield = [0,0,0,0,0];
-              for (let i = 1; i < Player02.Field.length; i++) {
-                if((!isHaveDefender || Player02.Field[i].class  == "Defender") ||  Player01.Field[index].class == "Ranger"){
-                  newColorfield[i] = 2;
+              if(Player02.Field.length == 1){
+                let newlife = Player01.Lifepoint;
+                await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_02}/LifePoint`).set(newlife);
+              }else{
+                var isHaveDefender = Player02.Field.some((u) => u.class == "Defender");
+                var newColorfield = [0,0,0,0,0];
+                for (let i = 1; i < Player02.Field.length; i++) {
+                  if((!isHaveDefender || Player02.Field[i].class  == "Defender") ||  Player01.Field[index].class == "Ranger"){
+                    newColorfield[i] = 2;
+                  }
                 }
+                setFieldColor(newColorfield);
+                setAttacking(index);
               }
-              setFieldColor(newColorfield);
-              setAttacking(index);
             }
           }
         }
@@ -420,6 +434,16 @@ function PlayRoom({route , navigation}){
 
     const checkdeath = (item) => {
       return item.hp > 0 || item == "";
+    }
+
+    const gameEnd = (loser) => {
+      if(loser == UID_02){
+        alert("YOU WIN!")
+        navigation.navigate("Main")
+      }else if(loser == UID_01){
+        alert("YOU LOSE!")
+        navigation.navigate("Main")
+      }
     }
 
 
