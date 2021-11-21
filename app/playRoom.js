@@ -491,7 +491,6 @@ function PlayRoom({route , navigation}){
                     renderItem={handEnemy}
                     numColumns={6}
                     style={styles.handStyle}
-                    keyExtractor={index => index}
                   /> 
                 }
               </View>
@@ -510,7 +509,7 @@ function PlayRoom({route , navigation}){
                         data={Player02.Field}
                         renderItem={fieldEnemy}
                         numColumns={5}
-                        keyExtractor={item => {item.imgURL+":"}}
+                        keyExtractor={(item, index) => {item.imgURL+"-"+index}}
                         />
                     }
                   </ImageBackground>
@@ -529,6 +528,7 @@ function PlayRoom({route , navigation}){
                       data={Player01.Field}
                       renderItem={fieldUser}
                       numColumns={5}
+                      keyExtractor={(item, index) => {item.imgURL+"-"+index}}
                     />
                    }
                   </ImageBackground>
@@ -541,6 +541,7 @@ function PlayRoom({route , navigation}){
                     renderItem={myHand}
                     numColumns={6}
                     style={styles.handStyle}
+                    keyExtractor={(item, index) => {item.imgURL+"-"+index}}
                   />
                   }
               </View>
