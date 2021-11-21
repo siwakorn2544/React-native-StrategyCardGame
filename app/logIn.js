@@ -104,10 +104,10 @@ function App ({ navigation }) {
               <View style={styles.buttonContainer}>
                 {!user}
                 {user && (
-                  <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
-                       <Text style={{backgroundColor:'rgba(71, 66, 66, 0.5)',fontSize:20,borderRadius:10}} >Welcome {user.displayName}</Text>
+                  <View style={styles.UserView}> 
+                       <Text style={styles.fontWelcome} >Welcome {user.displayName}</Text>
                           
-                          <View style={{backgroundColor:"black", marginVertical: 10, borderRadius: 10, width: 90, height: 85}}>
+                          <View style={styles.imgUser}>
                             <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
                           </View>
                   
@@ -154,7 +154,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     alignSelf: 'center',
     justifyContent:'center',
-    // backgroundColor: 'red',
   },
   buttonContainer: {
     alignSelf: 'center',
@@ -194,9 +193,28 @@ const styles = StyleSheet.create({
   },
   textinbutton:{
     color:"#FFFFFF",
-    fontWeight:'bold',
-    textAlign:'center'
-  }
+    textAlign:'center',
+    fontFamily: "MEGLORIA",
+    fontSize:20,
+  },
+  fontWelcome:{
+    backgroundColor:'rgba(71, 66, 66, 0.5)',
+    fontSize:20,
+    borderRadius:10,
+    fontFamily: "MEGLORIA"
+  },
+  imgUser:{
+    backgroundColor:"rgba(83, 72, 79, 0.4)",
+    marginTop:10,
+    marginBottom:10,
+    borderTopRightRadius:20,
+    borderBottomLeftRadius:20,
+  },
+  UserView:{
+  flex:1,
+  justifyContent:'center',
+  alignItems:'center'
+  },
 });
 
 export default App;

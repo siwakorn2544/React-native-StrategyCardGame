@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {getCardLists, _receiveDeckData, getCardData, _saveDataDeck} from './database/User'
 import CardItem from './component/CardItem';
 import DeckSelect from './component/DeckSelect'
-import { Button, SafeAreaView, StyleSheet, Text, View, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, View, FlatList, ScrollView, TouchableOpacity,ImageBackground} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 function Screen({route, navigation}) {
     const [Deck, setDeck] = useState([]);
@@ -107,21 +108,28 @@ function Screen({route, navigation}) {
       setCardCount(Deck.length);
     },[Deck])
 
+    const BackIcon = () => {
+      return(
+        <Icon name="keyboard-return" size={25} color="black"> </Icon>
+      )
+    }
+
     return (
       <View style={{
         flex: 1
       }}>
+        <ImageBackground source={require('./assets/3.jpg')} resizeMode="cover" style={styles.imageBG}>
         <View
           onLayout = {(event) => setDeckZoneLocations(event)} 
           style={styles.selectDeck}>
-            <View style={{flex: 0.1, backgroundColor: "white"}} >
                 <TouchableOpacity  
                   onPress={() => navigation.navigate('Main')}
+                    style={styles.ViewText} 
                 >
-                  <Text>back</Text>
+                  <Text>Back</Text>
+                  <BackIcon/>
                 </TouchableOpacity>
-              </View>
-            <View style={{flex: 0.7, backgroundColor: "white"}}>
+            <View style={{flex: 0.7, backgroundColor: "rgba(61, 16, 16, 0.80)"}}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
               <FlatList
                 data={cardInDeck}
@@ -152,7 +160,8 @@ function Screen({route, navigation}) {
             renderItem={renderCardItem} numColumns={5}
             style={styles.listData}
           />
-        </View>      
+        </View>   
+        </ImageBackground>   
       </View>
     );
 }
@@ -160,13 +169,13 @@ function Screen({route, navigation}) {
 const styles = StyleSheet.create({
   selectDeck: {
       flex: 0.35,
-      backgroundColor: "red",
+      backgroundColor: "rgba(255, 255, 255, 0)",
       elevation: 2, // works on android
       flexDirection: 'row'
   },
   cardList: {
     flex: 0.65,
-    backgroundColor: "silver",
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     elevation: 2, // works on android   
   },
   listData: {
@@ -175,10 +184,13 @@ const styles = StyleSheet.create({
   cardInDeck:{
 
   },
+  imageBG:{
+    flex:1, 
+  },
   saveButton: {
     height: 40,
     width: 100,
-    backgroundColor: "rgba(185, 219, 0, 0.8)",
+    backgroundColor: "rgba(226, 255, 0, 0.8)",
     margin: 20,
     textAlign: 'center',
     justifyContent:'center',
@@ -188,8 +200,14 @@ const styles = StyleSheet.create({
   },
   boxItem: {
     flex: 0.2, 
-    backgroundColor: "red"
-  }
+    backgroundColor: "rgba(0, 178, 255, 0.8)"
+  },
+  ViewText:{
+    flex: 0.1,
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor: "rgba(255, 77, 0, 0.8)",
+  },
 })
 
 export default Screen;

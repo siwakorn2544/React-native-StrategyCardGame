@@ -92,16 +92,16 @@ function Screen({route , navigation}) {
     return ( 
         <View style={{flex:1}}>
           <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
-            <View style={{position:"absolute",justifyContent:'center',alignItems:'center',left:30}}>
-                <View style={{position:"relative", backgroundColor:"black", borderRadius: 10, width: 90, height: 85}}>
+            <View style={styles.imgForUser}>
+                <View style={styles.backGroundIMG}>
                       <Image source={{uri:(imgUrl != "") ? imgUrl : 'https://picsum.photos/800/1200.jpg'}} style={styles.iconUser}/>
                 </View>
                 <View style={{position:"relative"}}>
                   <Text> {Name} </Text>
                 </View>
             </View>
-            <View style={{flex:0.5,flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'rgba(84, 0, 0, 0.5)'}}>
-              <Text style={styles.GameName}>Defender of the Legends</Text>
+            <View style={styles.IMGICON}>
+              <Image source={require('./assets/DOTLS.png')} style={styles.imageIconLOGO}/>
             </View>
 
         <View style={styles.viewbutton}>
@@ -163,11 +163,6 @@ function Screen({route , navigation}) {
 }
 
 const styles = StyleSheet.create({
-  // SafeAreaView
-  // container: {
-  //   flex: 1,
-  //   backgroundColor:"white"
-  // },
   imageBG:{
     flex:1, 
   },
@@ -179,8 +174,8 @@ const styles = StyleSheet.create({
     // ปุ่ม Play
     buttonPlay:{
       borderWidth:3,
-      borderColor:'#0086f5',
-      backgroundColor:'#4286f5',
+      borderColor:'rgba(37, 97, 238, 0.8)',
+      backgroundColor:'rgba(58, 112, 238, 0.8)',
       borderRadius:2,
       margin:10,
       paddingHorizontal: 200,
@@ -189,8 +184,8 @@ const styles = StyleSheet.create({
     // ปุ่ม Deck 
     buttonDeck:{
       borderWidth:3,
-      borderColor:'#40D60E',
-      backgroundColor:'#84D60E',
+      borderColor:'rgba(31, 183, 7, 0.7)',
+      backgroundColor:'rgba(48, 226, 20, 0.7)',
       borderRadius:2,
       margin:10,
       paddingHorizontal: 200,
@@ -199,8 +194,8 @@ const styles = StyleSheet.create({
     // ปุ่ม Exit 
     buttonExit:{
       borderWidth:3,
-      borderColor:'#A00E0E',
-      backgroundColor:'#D60E0E',
+      borderColor:'rgba(158, 15, 15, 0.85)',
+      backgroundColor:'rgba(108, 6, 6, 0.85)',
       borderRadius:2,
       margin:10,
       paddingHorizontal: 200,
@@ -257,6 +252,32 @@ const styles = StyleSheet.create({
       alignSelf: "center",
       backgroundColor:"white",
     },
+    imgForUser:{
+      position:"absolute",
+      justifyContent:'center',
+      alignItems:'center',
+      left:30
+    },
+    backGroundIMG:{
+      position:"relative",
+      backgroundColor:"rgba(169, 160, 166, 0.26)",
+      marginTop:10, 
+      marginBottom:10,
+      borderBottomEndRadius:20,
+      borderTopLeftRadius:20,
+    },
+    //หน้า ICON ชื่อเกม
+    imageIconLOGO:{
+      width:250,
+      height:250,
+      marginTop:20
+    },
+    IMGICON:{
+      flex:0.5,
+      flexDirection:'row',
+      justifyContent:'center',
+      alignItems:'center'},
+    //------------------
     GameName: { 
       fontSize:20, 
       color:'white',
