@@ -16,6 +16,7 @@ function Screen({route , navigation}) {
     const [matchMaking, setMatchMaking] = useState(false);
     const [finding, setFinding] = useState(false);
     const [imgUrl, setImg] = useState("");
+
     const _retrieveData = async () => {
       try {
         //GET DATA
@@ -37,6 +38,16 @@ function Screen({route , navigation}) {
       
     }
 
+    const DeckChecking = async() => {
+      await _retrieveData();
+      setMatchMaking(true); 
+      setFinding(false);
+    }
+
+    const GoToDeckCreate = async() => {
+      await _retrieveData();
+      navigation.navigate('DeckC', {UID: UID ,DECK: myDeck})
+    }
     const MyXicon = () => {
       return(
         <Icon name="close" size={15} color="red" > </Icon>
@@ -83,7 +94,7 @@ function Screen({route , navigation}) {
         setCardChecking(0);
     }
 
-    if (cardChecking == myDeck.length){
+    if (cardChecking == myDeck.length || cardChecking == 40){
       clearInterval(interval);
     }
     return () => clearInterval(interval);
@@ -107,13 +118,13 @@ function Screen({route , navigation}) {
         <View style={styles.viewbutton}>
           <View>
               <TouchableOpacity style={styles.buttonPlay}
-              onPress= { () => {setMatchMaking(true); setFinding(false);} }
+              onPress= { DeckChecking }
               > 
               
               <Text style={styles.textinbutton}><MyFicon/>Play</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonDeck}
-              onPress={() => navigation.navigate('DeckC', {UID: UID ,DECK: myDeck})}> 
+              onPress={ GoToDeckCreate }> 
               <Text style={styles.textinbutton}><MYDicon/>Deck</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonExit}
@@ -139,7 +150,7 @@ function Screen({route , navigation}) {
               }
           </View>
           <View style={{flexDirection:"row", justifyContent:"space-evenly", alignItems:"center"}}>
-              <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false)}>
+              <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false) }>
                  <Text style={{color:"white"}}> cancal </Text>
               </TouchableOpacity>
               {(cardChecking >= _Deck.maxDeck()) &&

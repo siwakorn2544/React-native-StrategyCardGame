@@ -58,8 +58,9 @@ function Screen({route, navigation}) {
         count = {data.item.count}
         DeleteFromDeck = {(id) => {
           console.log('Delete Card:', id, 'from Deck...');
-          var dummy = Deck;
-          setDeck(dummy.splice(Deck.indexOf(id), 1));
+          var check = Deck.indexOf(id);
+          var dummy = Deck.filter((i, index) => {return index != check})
+          setDeck(dummy);
         }}
       />)
     }
