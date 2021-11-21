@@ -201,10 +201,11 @@ function PlayRoom({route , navigation}){
             });
             
         database()
-            .ref(`PlayRoom/${route.params.roomID}/conclusion`)
+            .ref(`PlayRoom/${route.params.roomID}/Conclusion`)
             .on('value', snapshot => {
                 //render ค่าใหม่
                 if(snapshot.val() != ""){
+                  console.log(snapshot.val())
                   gameEnd(snapshot.val());
                 }
             });
@@ -312,7 +313,7 @@ function PlayRoom({route , navigation}){
     }
 
     const summonCard = async (classSelect, img, index, atk, hp, cost) => {
-      if(Turn == UID_01){
+      if(Turn == UID_01 && Phase == 1){
         if(Player01.Mana >= cost){
           var player = Player01
           var isberserk = (classSelect == "Berserker") ? 1 : 0;
@@ -339,7 +340,7 @@ function PlayRoom({route , navigation}){
         }
       }
 
-    const handleFieldAction = (index) => {
+    const handleFieldAction = async (index) => {
         // console.log(index)
         if(Turn == UID_01){
           if(Player01.Field[index]){
@@ -439,10 +440,14 @@ function PlayRoom({route , navigation}){
     const gameEnd = (loser) => {
       if(loser == UID_02){
         alert("YOU WIN!")
-        navigation.navigate("Main")
+        setTimeout(() => {
+          navigation.navigate("Main")
+        },3000)
       }else if(loser == UID_01){
-        alert("YOU LOSE!")
-        navigation.navigate("Main")
+        alert("YOU LOSES!")
+        setTimeout(() => {
+          navigation.navigate("Main")
+        },3000)
       }
     }
 
