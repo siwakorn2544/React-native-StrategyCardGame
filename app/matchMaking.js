@@ -32,11 +32,10 @@ function MatchMaking({route, navigation}){
       .ref(`/PlayRoom`)
       .on('value', snapshot => {
         if(roomID in snapshot.val())
-          
 
-
-        setTimeout(() => {
+        setTimeout(async () => {
           navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
+          await database().ref(`/Queue/${route.params.UID}`).remove();
         }, 3000)
       })
 

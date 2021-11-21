@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/FontAwesome5'
 import Icon3 from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon4 from 'react-native-vector-icons/MaterialIcons'
+import { get } from 'react-native/Libraries/Utilities/PixelRatio';
 
 function Screen({route , navigation}) {
     const [myDeck, setDeck] = useState([]);
@@ -23,11 +24,10 @@ function Screen({route , navigation}) {
         const value = route.params.UID;
         const image = route.params.image
         const name = await _receiveName(value);
-        const deck = await _receiveDeckData(value);
+        await _getDeck(value)
         //SET DATA
         setUID(value);
         setName(name);
-        setDeck(deck);
         setImg(image);
         
         // console.log(image, name, deck);
@@ -38,14 +38,19 @@ function Screen({route , navigation}) {
       
     }
 
+    const _getDeck = async (value) => {
+      const deck = await _receiveDeckData(value);
+      setDeck(deck);
+    }
+
     const DeckChecking = async() => {
-      await _retrieveData();
+      await _getDeck(UID);
       setMatchMaking(true); 
       setFinding(false);
     }
 
     const GoToDeckCreate = async() => {
-      await _retrieveData();
+      await _getDeck(UID);
       navigation.navigate('DeckC', {UID: UID ,DECK: myDeck})
     }
     const MyXicon = () => {

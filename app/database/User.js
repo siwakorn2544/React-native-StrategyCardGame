@@ -27,7 +27,7 @@ async function _receiveDeckData(UID){
             else {
                 decklist = snapshot.val(); 
             }
-            console.log(decklist);
+            console.log("get Deck", snapshot.val().length);
         });
     return decklist;
 }
