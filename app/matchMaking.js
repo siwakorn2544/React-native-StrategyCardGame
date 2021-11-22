@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Text, View, StyleSheet,ImageBackground} from "react-native";
+import { Button, Text, View, StyleSheet,ImageBackground, Image,TouchableOpacity} from "react-native";
 import { database } from './database/db';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 function MatchMaking({route, navigation}){
-  const [Loading, setLoading] = useState("0");
+  const [Loading, setLoading] = useState("");
   const [findRoom, setFinding] = useState(false);
   const [myQueue, setMyQueue] = useState("");
   const [user, setUser] = useState()
@@ -16,26 +17,44 @@ function MatchMaking({route, navigation}){
   const subscibeQueue = async () => {
     
   }
+  const BacktoM = ()  =>{
+     database()
+     .ref(`/Queue/${route.params.UID}`)
+     .off('value', DBgame);
+     database()
+     .ref(`/PlayRoom`)
+     .off('value', Pregame);
+     navigation.navigate('Main')
+     console.log('hello')
+  }
+  
+  const CheckIcon = () => {
+    return(
+      <Icon name="check" size={35} color="rgba(255, 0, 132, 0.8)"> </Icon>
+    )
+  }
 
-  database()
+  const DBgame = database()
         .ref(`/Queue/${route.params.UID}`)
         .on('value', snapshot => {
             //มีการเปลี่ยนค่า
             if (snapshot.val() != "" && snapshot.val() != null){
-              setLoading("Match Found!");
+              setFinding(true);
+              setLoading("Match Found")
               setRoomID(snapshot.val());
               console.log("roomID: ", snapshot.val());
             }
     });
 
-    database()
+  const Pregame = database()
       .ref(`/PlayRoom`)
       .on('value', snapshot => {
         if(roomID in snapshot.val())
 
         setTimeout(async () => {
+          
           navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
-          await database().ref(`/Queue/${route.params.UID}`).remove();
+          // await database().ref(`/Queue/${route.params.UID}`).remove();
         }, 3000)
       })
 
@@ -45,26 +64,74 @@ function MatchMaking({route, navigation}){
   },[])
 
   return (
-        <ImageBackground source={require('./assets/imggif/loading2.gif')} resizeMode="center" style={styles.imageBG}>
-          <View style={styles.jst_Center}>
-            <Text style={styles.fontLoading}>{Loading}</Text>
-            {/* <Text style={styles.fontLoading}>{Loading}</Text> */}
+
+        <View style={styles.container}>
+          <ImageBackground source={require('./assets/imggif/Wallpaper-Fantasy.jpg')} resizeMode="cover" style={styles.imageBG}>
+          <View style={{backgroundColor:"rgba(12, 12, 12, 0.7)",height:"80%",width:"80%",marginHorizontal:'10%',marginVertical:'5%',alignItems:'center',justifyContent:'center'}}>
+          {findRoom ? (
+            <View style={styles.itemInBox}>
+                <Text style={styles.TextMatchF}>{Loading} <CheckIcon/></Text>
+            </View>
+          ):
+            <View style={styles.itemInBox}>
+                <Image source={require('./assets/imggif/loading.gif')} style={styles.imgConfig}></Image>
+            </View>
+        }
+            <TouchableOpacity
+            style={styles.buttonBack}
+            onPress={BacktoM}
+            >
+              <Text style={styles.fontConfig}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
           </View>
-        </ImageBackground>
+          </ImageBackground>
+        </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container:{
+    flex:1,
+  },
+  itemInBox:{
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'rgba(255, 0, 132, 0.3)',
+  },
   imageBG:{
     flex:1,
   },
-  jst_Center:{
-    flex:1,
-    alignItems:"center",
+  TextMatchF:{
+    fontSize:30,
+    color:'rgba(255, 0, 132, 0.8)'
   },
-  fontLoading:{
+  imgConfig:{
+    height:150,
+    width:150
+  },
+  buttonBack:{
+    borderWidth:3,
+    borderColor:'rgba(110, 0, 0, 0.9)',
+    backgroundColor:'rgba(0, 0, 0, 0.9)',
+    borderRadius:15,
+    margin:10,
+    alignItems:'center',
+    justifyContent:'center',
+    width:120,
+    height:50
+  },
+    fontLoading:{
     fontSize:60,
+  },
+  fontConfig:{
+    fontSize:25,
+    fontFamily: "MEGLORIA",
+    color:'white'
   }
+
 })
 
 export default MatchMaking;
+

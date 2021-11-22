@@ -110,7 +110,6 @@ function App ({ navigation }) {
                           <View style={styles.imgUser}>
                             <Image source={{uri: user.photoURL}} style={styles.iconUser}/>
                           </View>
-                  
                     <View>
                       <TouchableOpacity 
                       onPress= { checkData_User }
