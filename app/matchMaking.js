@@ -61,6 +61,9 @@ function MatchMaking({route, navigation}){
   useEffect( ()=> {
     addData();
     // subscibeQueue();
+    return function cleanup() {
+      mounted = false
+  }
   },[])
 
   return (
@@ -98,7 +101,6 @@ const styles = StyleSheet.create({
   itemInBox:{
     alignItems:'center',
     justifyContent:'center',
-    backgroundColor:'rgba(255, 0, 132, 0.3)',
   },
   imageBG:{
     flex:1,
