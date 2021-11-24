@@ -51,9 +51,13 @@ function MatchMaking({route, navigation}){
         if(roomID in snapshot.val())
 
         setTimeout(async () => {
-          
-          navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
           await database().ref(`/Queue/${route.params.UID}`).remove();
+          navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
+<<<<<<< Updated upstream
+          await database().ref(`/Queue/${route.params.UID}`).remove();
+=======
+    
+>>>>>>> Stashed changes
         }, 3000)
       })
 

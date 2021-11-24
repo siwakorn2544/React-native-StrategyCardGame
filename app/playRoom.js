@@ -580,7 +580,7 @@ function PlayRoom({route , navigation}){
                         <FlatList
                         data={Player02.Field}
                         renderItem={fieldEnemy}
-                        numColumns={5}
+                        numColumns={6}
                         keyExtractor={(item, index) => {item.imgURL+"-"+index}}
                         />
                     }
@@ -599,7 +599,7 @@ function PlayRoom({route , navigation}){
                     <FlatList
                       data={Player01.Field}
                       renderItem={fieldUser}
-                      numColumns={5}
+                      numColumns={6}
                       keyExtractor={(item, index) => {item.imgURL+"-"+index}}
                     />
                    }
