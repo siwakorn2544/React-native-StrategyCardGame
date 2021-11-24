@@ -22,6 +22,7 @@ function PlayRoom({route , navigation}){
     const [TextPhase, setTextPhase] = useState("Main Phase");
     const [UID_01, setUID1] = useState("");
     const [UID_02, setUID2] = useState("");
+    const [buttonColor, setBtColor] = useState("green")
 
     //Animation DrawCard
     const pan = useRef(new Animated.ValueXY()).current; //step01
@@ -38,6 +39,9 @@ function PlayRoom({route , navigation}){
             resetcanAttack();
             setPhase(1);
             setTextPhase("Main Phase");
+            Animated.spring(
+              pan, { toValue:{x:0, y:0},useNativeDriver: false }
+            ).start();
         },
     }); //step02
 
@@ -67,98 +71,96 @@ function PlayRoom({route , navigation}){
     }
 
     const DrawCardStartGame = async (deck, i) => {
+      
         for (let index = 0; index < i; index++) {
-                //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
-                let todraw = await getCardInformation(deck.Deck[0]);
-                deck.Hand.push(todraw);
-                deck.Deck.shift();
+          if (deck.Hand.length < 7){
+            //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
+            let todraw = await getCardInformation(deck.Deck[0]);
+            deck.Hand.push(todraw);
+            deck.Deck.shift();
+          }
         } 
-            // await _asynsPlayer(route.params.UID);
-            await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Hand`).set(deck.Hand);
-            await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Deck`).set(deck.Deck);
-    }
+      // await _asynsPlayer(route.params.UID);
+        await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Hand`).set(deck.Hand);
+        await database().ref(`PlayRoom/${route.params.roomID}/players/${deck.UID}/Deck`).set(deck.Deck);
+      }
 
     useEffect(async () => {
         let players = await _setDataGame(route.params.roomID);
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Deck`)
-            .on('value', snapshot => {
-                //render ค่าใหม่
-                var player = Player01
-                player.Deck = snapshot.val()
-                setPlayer01(player)
-        });
+        //DetachingCallBack
+        const Deck01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Deck`);
+        const Name01 =  database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/name`);
+        const Name02 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/name`);
+        const MaxMana01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/MaxMana`);
+        const TurnData = database().ref(`PlayRoom/${route.params.roomID}/Turn`);
+        const Mana01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`);
+        const Field01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Field`);
+        const Field02 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/Field`);
+            
+          Deck01.on('value', snapshot => {
+              //render ค่าใหม่
+              var player = Player01
+              player.Deck = snapshot.val()
+              setPlayer01(player)
+          });
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/name`)
-            .on('value', snapshot => {
-                //render ค่าใหม่
-                var player = Player01
-                player.name = snapshot.val()
-                setPlayer01(player)
-        });
+          Name01.on('value', snapshot => {
+              //render ค่าใหม่
+              var player = Player01
+              player.name = snapshot.val()
+              setPlayer01(player)
+          });
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/name`)
-            .on('value', snapshot => {
-                //render ค่าใหม่
-                var player = Player02
-                player.name = snapshot.val()
-                setPlayer01(player)
-        });
+          Name02.on('value', snapshot => {
+              //render ค่าใหม่
+              var player = Player02
+              player.name = snapshot.val()
+              setPlayer01(player)
+          });
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/MaxMana`)
-            .on('value', snapshot => {
-                //render ค่าใหม่
-                var player = Player01
-                player.MaxMana = snapshot.val()
-                setPlayer01(player)
-        });
+          MaxMana01.on('value', snapshot => {
+              //render ค่าใหม่
+              var player = Player01
+              player.MaxMana = snapshot.val()
+              setPlayer01(player)
+          });
+            
+          TurnData.on('value', async(snapshot) => {
+            if (snapshot.val() == players[0].UID){
+              setPhase(0);
+              setTextPhase("Draw Phase")
+              setBtColor("green")
+              await database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`).set(Player01.MaxMana);              }else{
+              setTextPhase("Enemy Turn")
+              setBtColor("black")
+            }
+              console.log("Turn: ", snapshot.val());
+              setTurn(snapshot.val());          
+          });
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/Turn`)
-            .on('value', async(snapshot) => {
-              if (snapshot.val() == players[0].UID){
-                setPhase(0);
-                setTextPhase("Draw Phase")
-                await database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`).set(Player01.MaxMana);
-              }else{
-                setTextPhase("Enemy Turn")
-              }
-                console.log("Turn: ", snapshot.val());
-                setTurn(snapshot.val());          
-        });
+          Mana01.on('value', snapshot => {
+              //render ค่าใหม่
+              var player = Player01
+              player.Mana = snapshot.val()
+              setPlayer01(player)
+          });
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`)
-            .on('value', snapshot => {
-                //render ค่าใหม่
-                var player = Player01
-                player.Mana = snapshot.val()
-                setPlayer01(player)
-        });
-
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Field`)
-            .on('value', snapshot => {
+          Field01.on('value', snapshot => {
                 console.log('field 01: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player01
                 player.Field = snapshot.val()
                 setPlayer01(player);
-        }); 
+          }); 
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/Field`)
-            .on('value', snapshot => {
-                console.log('field 02: ', snapshot.val());
-                //render ค่าใหม่
-                var player = Player02
-                player.Field = snapshot.val()
-                setPlayer02(player);
-        });
+          Field02.on('value', snapshot => {
+              console.log('field 02: ', snapshot.val());
+              //render ค่าใหม่
+              var player = Player02
+              player.Field = snapshot.val()
+              setPlayer02(player);
+          });
 
         database()
             .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Hand`)
@@ -277,7 +279,9 @@ function PlayRoom({route , navigation}){
       var newHand = new Object(Player01.Hand);
         //ทำตัวแปร hand field มารับค่าบนสนาม เเล้วsetเข้าdb
       var todraw = await getCardInformation(newdeck[0]);
+      if (newHand.length < 7){
         newHand.push(todraw);
+      }    
         newdeck.shift();
         console.log("Hand: ", newHand);
         console.log("Deck: ", newdeck);
@@ -298,12 +302,14 @@ function PlayRoom({route , navigation}){
         if(Phase+1 == 2){
           setPhase(Phase+1);
           setTextPhase("Battle Phase")
+          setBtColor("red")
           console.log(2)
         }
         else if(Phase+1 == 3){
           await database().ref(`/PlayRoom/${route.params.roomID}/Turn`).set(UID_02);
           setTextPhase("Enemy Turn")
           console.log("End")
+          setBtColor("black")
           if(Player01.MaxMana < 6){
             var newmax = Player01.MaxMana+1;
             await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/MaxMana`).set(newmax);
@@ -337,6 +343,9 @@ function PlayRoom({route , navigation}){
           } catch(e){console.log(e)}
         }
           
+        }
+        else{
+          alert("you can't summon this phase!")
         }
       }
 
@@ -494,7 +503,7 @@ function PlayRoom({route , navigation}){
                   <FlatList
                     data={Object.values(Player02.Hand)}
                     renderItem={handEnemy}
-                    numColumns={6}
+                    numColumns={7}
                     style={styles.handStyle}
                   /> 
                 }
@@ -539,12 +548,12 @@ function PlayRoom({route , navigation}){
                   </ImageBackground>
                 </View>
               </View>
-              <View style={{height: "20%",marginHorizontal: 30, alignItems: "center"}}>
+              <View style={{height: "20%",marginHorizontal: 30, alignItems: "center", width: "80%"}}>
                   { (Player01.Hand != []) &&
                   <FlatList
                     data={Player01.Hand}
                     renderItem={myHand}
-                    numColumns={6}
+                    numColumns={7}
                     style={styles.handStyle}
                     keyExtractor={(item, index) => {item.imgURL+"-"+index}}
                   />
@@ -558,7 +567,7 @@ function PlayRoom({route , navigation}){
                   />
               </View>
                 <View style={{height: 100, width: 100, borderRadius: 100, marginLeft: 30 ,backgroundColor: "white"}}>
-                  <TouchableOpacity onPress={() => nextPhase()} style={{height: 100, width: 100, borderRadius: 100,backgroundColor: "black", alignItems: "center", paddingTop: "40%"}}>
+                  <TouchableOpacity onPress={() => nextPhase()} style={{height: 100, width: 100, borderRadius: 100,backgroundColor: buttonColor, alignItems: "center", paddingTop: "40%"}}>
                       <Text style={{color: "white", fontWeight: "bold"}}>
                         { TextPhase  }
                       </Text>

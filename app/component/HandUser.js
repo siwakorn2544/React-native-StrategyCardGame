@@ -45,8 +45,9 @@ export default function MyHand(props) {
 
     return (
         <View style={{flex: 1}}>
-            <Modal style={{alignItems: "center"}} isVisible={show} onBackdropPress={() => setShow(false)}>
+            <Modal style={{alignItems: "center"}} isVisible={show} onBackdropPress={() => {setShow(false); setSelectClass(false)}}>
                 <View style={{flexDirection: "row", flex: 1}}>
+                    { (selectClass) &&
                     <View style={styles.viewSelectClass}>
                         <Image source={ClassOfCards[props.Class[0]]} style={styles.IconSelectClass}/>
                         <Button 
@@ -55,14 +56,20 @@ export default function MyHand(props) {
                             onPress={() => {props.summonUnit(props.Class[0],props.id,props.index,props.atk[0],props.hp[0],props.cost); setShow(false);}}
                         />
                     </View>
+                    }
                     <View style={{flexDirection: "row"}}>
+                        { (selectClass) &&
                         <Icon name="arrow-bold-left" size={60} color="blue" style={{marginTop: 75}}/>
+                        }
                         <Image source={(img != "") ? { uri: img } : require("../assets/backCard.jpg")} 
                             style={styles.cardEnlarge}
                         />
+                        { (selectClass) &&
                         <Icon name="arrow-bold-right" size={60} color="red" style={{marginTop: 75}}/>
+                        }
                     </View>
-                    <View style={styles.viewSelectClass}>
+                    { (selectClass) &&
+                    <View style={styles.viewSelectClass} isVisible={false}>
                         <Image source={ClassOfCards[props.Class[1]]} style={styles.IconSelectClass}/>
                         <Button 
                             title="►SELECT◄" 
@@ -70,6 +77,7 @@ export default function MyHand(props) {
                             onPress={() => {props.summonUnit(props.Class[1],props.id,props.index,props.atk[1],props.hp[1],props.cost); setShow(false);}}
                         />
                     </View>
+                    }
                 </View>
             </Modal>
             <View>
