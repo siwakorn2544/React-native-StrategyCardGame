@@ -16,6 +16,7 @@ function MyApp() {
       <Stack.Navigator 
         initialRouteName="LogIn"
         // initialRouteName="Test"
+        // initialRouteName="PlayRoom"
         screenOptions={{
           headerShown: false
         }}

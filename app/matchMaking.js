@@ -53,7 +53,7 @@ function MatchMaking({route, navigation}){
         setTimeout(async () => {
           
           navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
-          // await database().ref(`/Queue/${route.params.UID}`).remove();
+          await database().ref(`/Queue/${route.params.UID}`).remove();
         }, 3000)
       })
 
