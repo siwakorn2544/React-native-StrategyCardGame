@@ -23,6 +23,8 @@ function PlayRoom({route , navigation}){
     const [UID_01, setUID1] = useState("");
     const [UID_02, setUID2] = useState("");
     const [buttonColor, setBtColor] = useState("green")
+    const [surrender, setSurrender] = useState(false)
+    const [status, setstatus] = useState(true)
 
     //Animation DrawCard
     const pan = useRef(new Animated.ValueXY()).current; //step01
@@ -89,14 +91,19 @@ function PlayRoom({route , navigation}){
         let players = await _setDataGame(route.params.roomID);
 
         //DetachingCallBack
-        const Deck01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Deck`);
-        const Name01 =  database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/name`);
-        const Name02 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/name`);
-        const MaxMana01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/MaxMana`);
-        const TurnData = database().ref(`PlayRoom/${route.params.roomID}/Turn`);
-        const Mana01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`);
-        const Field01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Field`);
-        const Field02 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/Field`);
+      const Deck01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Deck`);
+      const Name01 =  database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/name`);
+      const Name02 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/name`);
+      const MaxMana01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/MaxMana`);
+      const TurnData = database().ref(`PlayRoom/${route.params.roomID}/Turn`);
+      const Mana01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Mana`);
+      const Field01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Field`);
+      const Field02 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/Field`);
+      const Hand01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Hand`)
+      const Hand02 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/Hand`)
+      const Lifepoint01 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/LifePoint`)
+      const Lifepoint02 = database().ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/LifePoint`)
+      const subcon = database().ref(`PlayRoom/${route.params.roomID}/Conclusion`)
             
           Deck01.on('value', snapshot => {
               //render ค่าใหม่
@@ -162,9 +169,7 @@ function PlayRoom({route , navigation}){
               setPlayer02(player);
           });
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/Hand`)
-            .on('value', snapshot => {
+        Hand01.on('value', snapshot => {
                 console.log('hand 01: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player01
@@ -172,9 +177,7 @@ function PlayRoom({route , navigation}){
                 setPlayer01(player);
         });
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/Hand`)
-            .on('value', snapshot => {
+        Hand02.on('value', snapshot => {
                 console.log('hand 02: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player02
@@ -182,9 +185,8 @@ function PlayRoom({route , navigation}){
                 setPlayer02(player);
             });
 
-          database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[0].UID}/LifePoint`)
-            .on('value', snapshot => {
+          
+            Lifepoint01.on('value', snapshot => {
                 console.log('LP 01: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player01
@@ -192,9 +194,8 @@ function PlayRoom({route , navigation}){
                 setPlayer01(player);
             });
 
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/players/${players[1].UID}/LifePoint`)
-            .on('value', snapshot => {
+        
+            Lifepoint02.on('value', snapshot => {
                 console.log('LP 02: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player02
@@ -202,20 +203,60 @@ function PlayRoom({route , navigation}){
                 setPlayer02(player);
             });
             
-        database()
-            .ref(`PlayRoom/${route.params.roomID}/Conclusion`)
-            .on('value', snapshot => {
+        subcon.on('value', async (snapshot) => {
                 //render ค่าใหม่
+                console.log("conluion:"+snapshot.val())
                 if(snapshot.val() != ""){
                   console.log(snapshot.val())
-                  gameEnd(snapshot.val());
+                  // setstatus(false)
+                  // if(snapshot.val() == UID_02){
+                  //   alert("YOU WIN!")
+                  // }else if(snapshot.val() == UID_01){
+                  //   alert("YOU LOSS!")
+                  // }
+                  await Deck01.off()
+                  await Name01.off()
+                  await Name02.off()
+                  await MaxMana01.off()
+                  await TurnData.off()
+                  await Mana01.off()
+                  await Field01.off()
+                  await Field02.off()
+                  await subcon.off()
+                  clearData();
+                  // database().ref(`PlayRoom/${route.params.roomID}`).set(null).then(
+                  //   () => navigation.navigate("LogIn")
+                  // );
+                  // gameEnd(snapshot.val());
+                  navigation.navigate("LogIn")
                 }
             });
-
+        // a.ref(`PlayRoom/${route.params.roomID}`).on('value',snapshot => {
+        //   if(snapshot.val == null){
+        //     gameEnd(snapshot.val());
+        //   }
+        // });
+        
         setUID1(players[0].UID);
         setUID2(players[1].UID);
         await DrawCardStartGame(players[0], 3);
     }, [])
+    // useEffect(async () => {
+    //   if(status == false){
+    //     clearData();
+    //     await Deck01.off()
+    //     await Name01.off()
+    //     await Name02.off()
+    //     await MaxMana01.off()
+    //     await TurnData.off()
+    //     await Mana01.off()
+    //     await Field01.off()
+    //     await Field02.off()
+    //     await subcon.off()
+    //     navigation.navigate("LogIn")
+    //   }
+    // }
+    // ,[status])
 
     //component
     const fieldEnemy = (data) => {
@@ -236,7 +277,8 @@ function PlayRoom({route , navigation}){
         return (
             <FieldMonster 
                 index = {data.index} target = {handleFieldAction} 
-                width = {-1} ATK={data.item.atk} HP = {data.item.hp} 
+                width = {-1} ATK={data.item.atk} HP = {data.item.hp}
+                canAttack = {data.item.canAttack} phase = {Phase}
                 Class = {data.item.class} imgURL = {data.item.imgURL} 
             />)
       }
@@ -446,19 +488,26 @@ function PlayRoom({route , navigation}){
       return item.hp > 0 || item == "";
     }
 
-    const gameEnd = (loser) => {
-      if(loser == UID_02){
-        alert("YOU WIN!")
-        setTimeout(() => {
-          navigation.navigate("Main")
-        },3000)
-      }else if(loser == UID_01){
-        alert("YOU LOSES!")
-        setTimeout(() => {
-          navigation.navigate("Main")
-        },3000)
-      }
+    function clearData(){
+      setPlayer01({Hand: [], Field: []});
+          setPlayer02({Hand: [], Field: []});
+          setTurn("");
+          
+          //Local Varible
+          setPhase(1);
+          setAttacking(null);
+          setFieldColor([0,0,0,0,0]);
+          setMageAttacking([]);
+          setTextPhase("Main Phase");
+          setUID1("");
+          setUID2("");
     }
+
+    const askSurrender = () => {
+      setSurrender(true);
+    }
+
+    
 
 
       return (
@@ -467,7 +516,16 @@ function PlayRoom({route , navigation}){
             <View style={{flexDirection: "row", flex: 0.25}}>
               <View style={{ marginLeft:10, marginVertical: 10}}>
                 <View style={{height: "15%", width: 60, marginBottom: 15, paddingLeft: 5 ,alignItems: "center"}}>
-                  <Icon name="menu" size={50} color="white"/> 
+                  <TouchableOpacity onPress={askSurrender}><Icon name="flag" size={50} color="white"/></TouchableOpacity>
+                  <Modal isVisible={surrender} onBackdropPress={() => {setSurrender(false);}}>
+                  <View style={styles.modalView}>
+                    <View style={{flexDirection: "row"}}>
+                      <Button color="red" title="Surrender" onPress={async() => {
+                        await database().ref(`PlayRoom/${route.params.roomID}/Conclusion`).set(UID_01);
+                      }}/>
+                    </View>
+                  </View>
+                  </Modal>
                 </View>
                 <View style={{ width: 60, height: "70%"}}>
                   <View style={styles.manaBarGem}>
@@ -624,7 +682,7 @@ function PlayRoom({route , navigation}){
       lifepoint: {
         position: "absolute",
         left: 56,
-        top: 59,
+        top: 66,
         fontWeight: "bold",
         fontSize: 16,
         color: "red"
@@ -663,6 +721,13 @@ function PlayRoom({route , navigation}){
         right: 55,
         bottom: 0,
         elevation: 1
+      },
+      modalView: {
+        margin: 20,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        
       }
     })
 export default PlayRoom;
