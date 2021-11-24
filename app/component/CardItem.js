@@ -51,7 +51,7 @@ function CardItem(props){
             style={[pan.getLayout(), styles.cardAnimate]}
             {...panResponder.panHandlers}
         >    
-            <Image style={styles.card} source={{uri: (img != "") ? img : 'https://picsum.photos/800/1200.jpg'}} />
+            <Image style={styles.card} source={(img != "") ? { uri: img } : require("../assets/backCard.jpg") }  />
         </Animated.View>
     </View>
     )

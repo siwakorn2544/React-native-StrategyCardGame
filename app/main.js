@@ -40,18 +40,21 @@ function Screen({route , navigation}) {
 
     const _getDeck = async (value) => {
       const deck = await _receiveDeckData(value);
+      console.log(deck.length)
       setDeck(deck);
+      return deck
     }
 
     const DeckChecking = async() => {
-      await _getDeck(UID);
-      setMatchMaking(true); 
+      const deck = await _getDeck(UID);
+      setMatchMaking(true);
+      setCardChecking(deck.length); 
       setFinding(false);
     }
 
     const GoToDeckCreate = async() => {
-      await _getDeck(UID);
-      navigation.navigate('DeckC', {UID: UID ,DECK: myDeck})
+      const deck = await _getDeck(UID);
+      navigation.navigate('DeckC', {UID: UID ,DECK: deck})
     }
     const MyXicon = () => {
       return(
@@ -86,24 +89,24 @@ function Screen({route , navigation}) {
       _retrieveData();
     }, [])
   
-    useEffect(() => {
-      let interval = null;
-      if (matchMaking) {
-        interval = setInterval(
-            () => {
-                setCardChecking(cardChecking => cardChecking+1);
-            }
-        , 20);
-    } else if (!matchMaking && cardChecking !== 0) {
-        clearInterval(interval);
-        setCardChecking(0);
-    }
+    // useEffect(() => {
+    //   let interval = null;
+    //   if (matchMaking) {
+    //     interval = setInterval(
+    //         () => {
+    //             setCardChecking(cardChecking => cardChecking+1);
+    //         }
+    //     , 20);
+    // } else if (!matchMaking && cardChecking !== 0) {
+    //     clearInterval(interval);
+    //     setCardChecking(0);
+    // }
 
-    if (cardChecking == myDeck.length || cardChecking == 40){
-      clearInterval(interval);
-    }
-    return () => clearInterval(interval);
-    }, [matchMaking, cardChecking])
+    // if (cardChecking == myDeck.length || cardChecking == 40){
+    //   clearInterval(interval);
+    // }
+    // return () => clearInterval(interval);
+    // }, [matchMaking, cardChecking])
   
     return ( 
         <View style={{flex:1}}>
@@ -158,7 +161,7 @@ function Screen({route , navigation}) {
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false) }>
                  <Text style={{color:"white"}}> cancal </Text>
               </TouchableOpacity>
-              {(cardChecking >= _Deck.maxDeck()) &&
+              {(cardChecking == _Deck.maxDeck()) &&
               <TouchableOpacity style={styles.findRoom} onPress={ 
                 () => navigation.navigate("MatchMaking", {
                   UID: UID,

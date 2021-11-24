@@ -84,6 +84,7 @@ function Screen({route, navigation}) {
 
     const saveDeck = () => {
       _saveDataDeck(route.params.UID, Deck);
+      alert("SAVE DECK!")
     }
 
     const setDeckZoneLocations = (event) => {

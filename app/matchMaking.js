@@ -16,16 +16,15 @@ function MatchMaking({route, navigation}){
 
   const subscibeQueue = async () => {
     
+  
+  
   }
-  const BacktoM = ()  =>{
-     database()
-     .ref(`/Queue/${route.params.UID}`)
-     .off('value', DBgame);
-     database()
-     .ref(`/PlayRoom`)
-     .off('value', Pregame);
-     navigation.navigate('Main')
-     console.log('hello')
+  const BacktoM = async() => {
+    console.log('UNSUB firebase');
+    await queueDt.off();
+    await Pregame.off();
+    navigation.navigate("LogIn");
+
   }
   
   const CheckIcon = () => {
@@ -34,9 +33,9 @@ function MatchMaking({route, navigation}){
     )
   }
 
-  const DBgame = database()
-        .ref(`/Queue/${route.params.UID}`)
-        .on('value', snapshot => {
+  const queueDt = database().ref(`/Queue/${route.params.UID}`);
+        
+        queueDt.on('value', snapshot => {
             //มีการเปลี่ยนค่า
             if (snapshot.val() != "" && snapshot.val() != null){
               setFinding(true);
@@ -44,11 +43,11 @@ function MatchMaking({route, navigation}){
               setRoomID(snapshot.val());
               console.log("roomID: ", snapshot.val());
             }
-    });
+        });
 
-  const Pregame = database()
-      .ref(`/PlayRoom`)
-      .on('value', snapshot => {
+  const Pregame = database().ref(`/PlayRoom`);
+      
+      Pregame.on('value', snapshot => {
         if(roomID in snapshot.val())
 
         setTimeout(async () => {
@@ -67,7 +66,7 @@ function MatchMaking({route, navigation}){
 
         <View style={styles.container}>
           <ImageBackground source={require('./assets/imggif/Wallpaper-Fantasy.jpg')} resizeMode="cover" style={styles.imageBG}>
-          <View style={{backgroundColor:"rgba(12, 12, 12, 0.7)",height:"80%",width:"80%",marginHorizontal:'10%',marginVertical:'5%',alignItems:'center',justifyContent:'center'}}>
+          <View style={{height:"80%",width:"80%",marginHorizontal:'10%',marginVertical:'5%',alignItems:'center',justifyContent:'center'}}>
           {findRoom ? (
             <View style={styles.itemInBox}>
                 <Text style={styles.TextMatchF}>{Loading} <CheckIcon/></Text>
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
   itemInBox:{
     alignItems:'center',
     justifyContent:'center',
-    backgroundColor:'rgba(255, 0, 132, 0.3)',
+    
   },
   imageBG:{
     flex:1,

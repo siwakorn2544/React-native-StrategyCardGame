@@ -66,7 +66,7 @@ function DeckSelect(props){
             <View style={{position: "absolute",  elevation: 3, right: 4, width: 20, height: 20, backgroundColor: "grey"}}>
                 <Text> x{props.count}</Text>
             </View>
-            <Image style={styles.card} source={{uri: (img != "") ? img : 'https://picsum.photos/800/1200.jpg'}} />
+            <Image style={styles.card} source={(img != "") ? { uri: img } : require("../assets/backCard.jpg") } />
         </TouchableOpacity>
         </Animated.View>
     </View>
