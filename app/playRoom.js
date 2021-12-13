@@ -186,7 +186,7 @@ function PlayRoom({route , navigation}){
             });
 
           
-            Lifepoint01.on('value', snapshot => {
+            Lifepoint01.on('value', async snapshot => {
                 console.log('LP 01: ', snapshot.val());
                 //render ค่าใหม่
                 var player = Player01
@@ -403,8 +403,9 @@ function PlayRoom({route , navigation}){
             }
             else if(Phase == 2 && Player01.Field[index].canAttack >= 1){
               if(Player02.Field.length == 1){
-                let newlife = Player02.Lifepoint-1;
+                let newlife = Player02.LifePoint-Player01.Field[index].atk;
                 await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_02}/LifePoint`).set(newlife);
+                // console.log("a "+Player02.LifePoint);
               }else{
                 var isHaveDefender = Player02.Field.some((u) => u.class == "Defender");
                 var newColorfield = [0,0,0,0,0];
