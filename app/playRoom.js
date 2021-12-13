@@ -191,6 +191,9 @@ function PlayRoom({route , navigation}){
                 //render ค่าใหม่
                 var player = Player01
                 player.LifePoint = snapshot.val()
+                if(player.LifePoint <= 0){
+                  await database().ref(`PlayRoom/${route.params.roomID}/Conclusion`).set(UID_01);
+                }
                 setPlayer01(player);
             });
 
