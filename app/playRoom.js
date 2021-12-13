@@ -400,7 +400,7 @@ function PlayRoom({route , navigation}){
             }
             else if(Phase == 2 && Player01.Field[index].canAttack >= 1){
               if(Player02.Field.length == 1){
-                let newlife = Player01.Lifepoint;
+                let newlife = Player02.Lifepoint-1;
                 await database().ref(`/PlayRoom/${route.params.roomID}/players/${UID_02}/LifePoint`).set(newlife);
               }else{
                 var isHaveDefender = Player02.Field.some((u) => u.class == "Defender");
