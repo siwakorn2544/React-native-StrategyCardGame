@@ -682,7 +682,7 @@ function PlayRoom({route , navigation}){
       lifepoint: {
         position: "absolute",
         left: 56,
-        top: 66,
+        top: 59,
         fontWeight: "bold",
         fontSize: 16,
         color: "red"

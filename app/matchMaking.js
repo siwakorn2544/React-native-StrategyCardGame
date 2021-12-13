@@ -14,11 +14,6 @@ function MatchMaking({route, navigation}){
     await database().ref(`/Queue`).child(route.params.UID).set("");
   }
 
-  const subscibeQueue = async () => {
-    
-  
-  
-  }
   const BacktoM = async() => {
     console.log('UNSUB firebase');
     await queueDt.off();
@@ -53,11 +48,7 @@ function MatchMaking({route, navigation}){
         setTimeout(async () => {
           await database().ref(`/Queue/${route.params.UID}`).remove();
           navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
-<<<<<<< Updated upstream
           await database().ref(`/Queue/${route.params.UID}`).remove();
-=======
-    
->>>>>>> Stashed changes
         }, 3000)
       })
 
