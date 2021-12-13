@@ -70,7 +70,7 @@ GoogleService-Info.plist
 SHA1.txt
 
 
-app/test.js
+# app/test.js
 
 
 package.json
@@ -99,3 +99,4 @@ android/app/src/main/assets/fonts/AntDesign.ttf
 *.json
 app/toupload.js
 functions/
+app/dummy.js

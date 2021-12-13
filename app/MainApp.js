@@ -4,6 +4,7 @@ import LogIn from './logIn';
 import Main from './main';
 import MatchMaking from './matchMaking';
 import PlayRoom from './playRoom';
+import Testing from "./test";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -14,10 +15,13 @@ function MyApp() {
     <NavigationContainer >
       <Stack.Navigator 
         initialRouteName="LogIn"
+        // initialRouteName="Test"
+        // initialRouteName="PlayRoom"
         screenOptions={{
           headerShown: false
         }}
       >
+        {/* <Stack.Screen name="Test" component={Testing} /> */}
         <Stack.Screen name="LogIn" component={LogIn} />
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="DeckC" component={DeckCreate} />

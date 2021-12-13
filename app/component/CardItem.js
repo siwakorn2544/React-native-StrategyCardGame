@@ -4,14 +4,8 @@ import Modal from "react-native-modal";
 import storage from "@react-native-firebase/storage";
 
 function CardItem(props){
-    const [show, setShow] = useState(false);
     const [source, setSource] = useState(""); 
     const [img, setImage] = useState(""); 
-
-    const showEnlargeImage = (src) => {
-        setShow(true);
-        setSource(src);
-    }
 
     const pan = useRef(new Animated.ValueXY()).current; //step01
     const panResponder = PanResponder.create({
@@ -52,19 +46,12 @@ function CardItem(props){
 
     return (
     <View>
-        <Modal style={{alignItems: "center"}} isVisible={show} onBackdropPress={() => setShow(false)}>
-            <View style={{flexDirection: "row"}}>
-                <Image source={{uri: img}} style={styles.cardEnlarge}/>
-            </View>
-        </Modal>
         <Animated.View 
             key={props.cardId}
             style={[pan.getLayout(), styles.cardAnimate]}
             {...panResponder.panHandlers}
-        >   
-        <TouchableOpacity onLongPress={showEnlargeImage}>
-            <Image style={styles.card} source={{uri: (img != "") ? img : 'https://picsum.photos/800/1200.jpg'}} />
-        </TouchableOpacity> 
+        >    
+            <Image style={styles.card} source={(img != "") ? { uri: img } : require("../assets/backCard.jpg") }  />
         </Animated.View>
     </View>
     )
