@@ -16,8 +16,9 @@ function MatchMaking({route, navigation}){
 
   const BacktoM = async() => {
     console.log('UNSUB firebase');
-    await queueDt.off();
-    await Pregame.off();
+    queueDt.off();
+    Pregame.off();
+    await database().ref(`/Queue/${route.params.UID}`).remove();
     navigation.navigate("LogIn");
 
   }
@@ -43,18 +44,30 @@ function MatchMaking({route, navigation}){
   const Pregame = database().ref(`/PlayRoom`);
       
       Pregame.on('value', snapshot => {
-        if(roomID in snapshot.val())
-
-        setTimeout(async () => {
-          await database().ref(`/Queue/${route.params.UID}`).remove();
-          navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
-          await database().ref(`/Queue/${route.params.UID}`).remove();
-        }, 3000)
+        if(roomID in snapshot.val()){
+          queueDt.off();
+          Pregame.off();
+          let playerUser = "";
+          let playerEnemy = ""; 
+          console.log(snapshot.val()[roomID])
+          for (let [key, values] of Object.entries(snapshot.val()[roomID].players)) {
+            if (key == route.params.UID){
+                playerUser = values.UID
+            }
+            else {
+                playerEnemy = values.UID
+            }
+          }
+          setTimeout(async () => {
+            await database().ref(`/Queue/${route.params.UID}`).remove();
+            console.log('UNSUB firebase');
+            navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID, player01: playerUser, player02: playerEnemy})
+          }, 3000)
+        }
       })
 
   useEffect( ()=> {
     addData();
-    // subscibeQueue();
   },[])
 
   return (

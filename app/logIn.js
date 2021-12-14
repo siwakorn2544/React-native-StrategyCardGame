@@ -66,7 +66,7 @@ function App ({ navigation }) {
     let exists = await dataCheck(user.uid);
     if (!exists){
       //create new player
-      await createUser(user.uid, user.displayName); 
+      await createUser(user.uid, user.displayName);
     }
     // await _storeData()
     await navigation.navigate('Main', {UID: user.uid, image: user.photoURL});
