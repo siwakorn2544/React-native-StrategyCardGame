@@ -14,7 +14,7 @@ import auth from '@react-native-firebase/auth';
 function App ({ navigation }) {
   const [loggedIn, setloggedIn] = useState(false);
   const [user, setUser] = useState([]);
-
+// ---------SignIN-----------
   const _signIn = async () => {
     console.log('Start SignIn . . .');
     try {
@@ -43,11 +43,12 @@ function App ({ navigation }) {
       }
     }
   };
+  // ---------SignIN-----------
   function onAuthStateChanged(user) {
     setUser(user);
     if (user) setloggedIn(true);
   }
-
+// ---------SignOUT-----------
   const signOut = async () => {
     try {
       await GoogleSignin.revokeAccess();
@@ -61,7 +62,7 @@ function App ({ navigation }) {
       console.error(error);
     }
   };
-
+// ---------SignOUT-----------
   const checkData_User = async () => {
     let exists = await dataCheck(user.uid);
     if (!exists){
@@ -86,11 +87,10 @@ function App ({ navigation }) {
 
   return (
     <View style={styles.bg}>
-      {/* <Image style={styles.imageBG} source={imageURL} resizeMode="cover"></Image> */}
-      {/* <ImageBackground source={imageURL} style={styles.imageBG}> */}
       <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
           <View style={styles.body}>
             <View >
+              {/* Google SignIn */}
               <View style={styles.sectionContainer}>
                 {!loggedIn && (
                   <GoogleSigninButton
@@ -100,7 +100,8 @@ function App ({ navigation }) {
                     onPress={_signIn}
                   />
                 )}
-              </View>            
+              </View>           
+               {/* Google SignIn */}
               <View style={styles.buttonContainer}>
                 {!user}
                 {user && (
