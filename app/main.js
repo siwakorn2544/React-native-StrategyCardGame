@@ -159,7 +159,7 @@ function Screen({route , navigation}) {
           </View>
           <View style={{flexDirection:"row", justifyContent:"space-evenly", alignItems:"center"}}>
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false) }>
-                 <Text style={{color:"white"}}> cancal </Text>
+                 <Text style={{color:"white"}}> cancel </Text>
               </TouchableOpacity>
               {(cardChecking == _Deck.maxDeck()) &&
               <TouchableOpacity style={styles.findRoom} onPress={ 
