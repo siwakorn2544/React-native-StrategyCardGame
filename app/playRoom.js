@@ -148,40 +148,59 @@ function PlayRoom({route, navigation}) {
   useEffect(async () => {
     let players = await _setDataGame(route.params.roomID);
 
-    playRoom.on('value', snapshot => {
+    const onValueChange1 = database().ref(`PlayRoom/${route.params.roomID}/players/${route.params.player01}`).on('value', snapshot => {
+      // setlp(snapshot.val().lp)
+      setPlayer01({Hand: snapshot.val().Hand, Field: snapshot.val().Field, LifePoint: snapshot.val().LifePoint, MaxMana: snapshot.val().MaxMana, Mana: snapshot.val().Mana, name: snapshot.val().name, Deck: snapshot.val().Deck});
+      console.log('User data 1: ', snapshot.val());
+    });
+
+    const onValueChange2 = database().ref(`PlayRoom/${route.params.roomID}/players/${route.params.player02}`).on('value', snapshot => {
+      // setlp(snapshot.val().lp)
+      setPlayer02({Hand: snapshot.val().Hand, Field: snapshot.val().Field, LifePoint: snapshot.val().LifePoint, MaxMana: snapshot.val().MaxMana, Mana: snapshot.val().Mana, name: snapshot.val().name, Deck: snapshot.val().Deck});
+      console.log('User data 2: ', snapshot.val());
+    });
+
+    const onGameEnd = database().ref(`PlayRoom/${route.params.roomID}/Conclusion`).on('value', snapshot => {
+          if(snapshot.val() != ""){
+              console.log("Test:"+snapshot.val())
+              navigation.navigate("LogIn", {"haveplayed": snapshot.val()});
+          }
+    });
+
+    const room = playRoom.on('value', snapshot => {
       forceUpdate();
       // navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: route.params.roomID})
     });
 
-    Deck01.on('value', snapshot => {
-      //render ค่าใหม่
-      var player = Player01;
-      player.Deck = snapshot.val();
-      setPlayer01(player);
-    });
+    // Deck01.on('value', snapshot => {
+    //   //render ค่าใหม่
+    //   var player = Player01;
+    //   player.Deck = snapshot.val();
+    //   setPlayer01(player);
+    // });
 
-    Name01.on('value', snapshot => {
-      //render ค่าใหม่
-      var player = Player01;
-      player.name = snapshot.val();
-      setPlayer01(player);
-    });
+    // Name01.on('value', snapshot => {
+    //   //render ค่าใหม่
+    //   var player = Player01;
+    //   player.name = snapshot.val();
+    //   setPlayer01(player);
+    // });
 
-    Name02.on('value', snapshot => {
-      //render ค่าใหม่
-      var player = Player02;
-      player.name = snapshot.val();
-      setPlayer01(player);
-    });
+    // Name02.on('value', snapshot => {
+    //   //render ค่าใหม่
+    //   var player = Player02;
+    //   player.name = snapshot.val();
+    //   setPlayer01(player);
+    // });
 
-    MaxMana01.on('value', snapshot => {
-      //render ค่าใหม่
-      var player = Player01;
-      player.MaxMana = snapshot.val();
-      setPlayer01(player);
-    });
+    // MaxMana01.on('value', snapshot => {
+    //   //render ค่าใหม่
+    //   var player = Player01;
+    //   player.MaxMana = snapshot.val();
+    //   setPlayer01(player);
+    // });
 
-    TurnData.on('value', async snapshot => {
+    const onTurnchange = TurnData.on('value', async snapshot => {
       if (snapshot.val() == route.params.player01) {
         setPhase(0);
         setTextPhase('Draw Phase');
@@ -199,103 +218,110 @@ function PlayRoom({route, navigation}) {
       setTurn(snapshot.val());
     });
 
-    Mana01.on('value', snapshot => {
-      //render ค่าใหม่
-      var player = Player01;
-      player.Mana = snapshot.val();
-      setPlayer01(player);
-    });
+    // Mana01.on('value', snapshot => {
+    //   //render ค่าใหม่
+    //   var player = Player01;
+    //   player.Mana = snapshot.val();
+    //   setPlayer01(player);
+    // });
 
-    Field01.on('value', snapshot => {
-      console.log('field 01: ', snapshot.val());
-      //render ค่าใหม่
-      var player = Player01;
-      player.Field = snapshot.val();
-      setPlayer01(player);
-    });
+    // Field01.on('value', snapshot => {
+    //   console.log('field 01: ', snapshot.val());
+    //   //render ค่าใหม่
+    //   var player = Player01;
+    //   player.Field = snapshot.val();
+    //   setPlayer01(player);
+    // });
 
-    Field02.on('value', snapshot => {
-      console.log('field 02: ', snapshot.val());
-      //render ค่าใหม่
-      var player = Player02;
-      player.Field = snapshot.val();
-      setPlayer02(player);
-    });
+    // Field02.on('value', snapshot => {
+    //   console.log('field 02: ', snapshot.val());
+    //   //render ค่าใหม่
+    //   var player = Player02;
+    //   player.Field = snapshot.val();
+    //   setPlayer02(player);
+    // });
 
-    Hand01.on('value', snapshot => {
-      console.log('hand 01: ', snapshot.val());
-      //render ค่าใหม่
-      var player = Player01;
-      player.Hand = snapshot.val();
-      setPlayer01(player);
-    });
+    // Hand01.on('value', snapshot => {
+    //   console.log('hand 01: ', snapshot.val());
+    //   //render ค่าใหม่
+    //   var player = Player01;
+    //   player.Hand = snapshot.val();
+    //   setPlayer01(player);
+    // });
 
-    Hand02.on('value', snapshot => {
-      console.log('hand 02: ', snapshot.val());
-      //render ค่าใหม่
-      var player = Player02;
-      player.Hand = snapshot.val();
-      setPlayer02(player);
-    });
+    // Hand02.on('value', snapshot => {
+    //   console.log('hand 02: ', snapshot.val());
+    //   //render ค่าใหม่
+    //   var player = Player02;
+    //   player.Hand = snapshot.val();
+    //   setPlayer02(player);
+    // });
 
-    Lifepoint01.on('value', async snapshot => {
-      console.log('LP 01: ', snapshot.val());
-      //render ค่าใหม่
-      var player = Player01;
-      player.LifePoint = snapshot.val();
-      if (player.LifePoint <= 0) {
-        await database()
-          .ref(`PlayRoom/${route.params.roomID}/Conclusion`)
-          .set(UID_01);
-      }
-      setPlayer01(player);
-    });
+    // Lifepoint01.on('value', async snapshot => {
+    //   console.log('LP 01: ', snapshot.val());
+    //   //render ค่าใหม่
+    //   var player = Player01;
+    //   player.LifePoint = snapshot.val();
+    //   if (player.LifePoint <= 0) {
+    //     await database()
+    //       .ref(`PlayRoom/${route.params.roomID}/Conclusion`)
+    //       .set(UID_01);
+    //   }
+    //   setPlayer01(player);
+    // });
 
-    Lifepoint02.on('value', snapshot => {
-      console.log('LP 02: ', snapshot.val());
-      //render ค่าใหม่
-      var player = Player02;
-      player.LifePoint = snapshot.val();
-      setPlayer02(player);
-    });
+    // Lifepoint02.on('value', snapshot => {
+    //   console.log('LP 02: ', snapshot.val());
+    //   //render ค่าใหม่
+    //   var player = Player02;
+    //   player.LifePoint = snapshot.val();
+    //   setPlayer02(player);
+    // });
 
-    subcon.on('value', async snapshot => {
-      if (snapshot.val() != '') {
-        console.log('con: ' + snapshot.val());
-        // setstatus(false)
-        // if(snapshot.val() == UID_02){
-        //   alert("YOU WIN!")
-        // }else if(snapshot.val() == UID_01){
-        //   alert("YOU LOSS!")
-        // }
-        playRoom.off();
-        Deck01.off();
-        Name01.off();
-        Name02.off();
-        MaxMana01.off();
-        TurnData.off();
-        Mana01.off();
-        Field01.off();
-        Field02.off();
-        // subcon.off()
+    // subcon.on('value', async snapshot => {
+    //   if (snapshot.val() != '') {
+    //     console.log('con: ' + snapshot.val());
+    //     // setstatus(false)
+    //     // if(snapshot.val() == UID_02){
+    //     //   alert("YOU WIN!")
+    //     // }else if(snapshot.val() == UID_01){
+    //     //   alert("YOU LOSS!")
+    //     // }
+    //     playRoom.off();
+    //     Deck01.off();
+    //     Name01.off();
+    //     Name02.off();
+    //     MaxMana01.off();
+    //     TurnData.off();
+    //     Mana01.off();
+    //     Field01.off();
+    //     Field02.off();
+    //     // subcon.off()
 
-        clearData();
-        // database().ref(`PlayRoom/${route.params.roomID}`).set(null).then(
-        //   () => navigation.navigate("LogIn")
-        // );
-        // gameEnd(snapshot.val());
-        navigation.navigate('LogIn');
-      }
-    });
-    // a.ref(`PlayRoom/${route.params.roomID}`).on('value',snapshot => {
-    //   if(snapshot.val == null){
-    //     gameEnd(snapshot.val());
+    //     clearData();
+    //     // database().ref(`PlayRoom/${route.params.roomID}`).set(null).then(
+    //     //   () => navigation.navigate("LogIn")
+    //     // );
+    //     // gameEnd(snapshot.val());
+    //     navigation.navigate('LogIn');
     //   }
     // });
+    // // a.ref(`PlayRoom/${route.params.roomID}`).on('value',snapshot => {
+    // //   if(snapshot.val == null){
+    // //     gameEnd(snapshot.val());
+    // //   }
+    // // });
 
     setUID1(players[0].UID);
     setUID2(players[1].UID);
     await DrawCardStartGame(players[0], 3);
+    return () => {
+      database().ref(`PlayRoom/${route.params.roomID}/players/${route.params.player01}`).off('value', onValueChange1);
+      database().ref(`PlayRoom/${route.params.roomID}/players/${route.params.player02}`).off('value', onValueChange2);
+      database().ref(`PlayRoom/${route.params.roomID}/Conclusion`).off('value', onGameEnd);
+      playRoom.off('value', room)
+      TurnData.off('value', onTurnchange);
+    };
   }, []);
 
   //component

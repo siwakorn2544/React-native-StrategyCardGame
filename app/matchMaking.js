@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Button, Text, View, StyleSheet,ImageBackground, Image,TouchableOpacity} from "react-native";
 import { database } from './database/db';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { useSelector } from "react-redux";
 
 function MatchMaking({route, navigation}){
+  const reduxUid = useSelector( (state) => state.user.uid );
   const [Loading, setLoading] = useState("");
   const [findRoom, setFinding] = useState(false);
   const [myQueue, setMyQueue] = useState("");
@@ -11,14 +13,14 @@ function MatchMaking({route, navigation}){
   const [roomID, setRoomID] = useState("")
 
   const addData  = async () => {
-    await database().ref(`/Queue`).child(route.params.UID).set("");
+    await database().ref(`/Queue`).child(reduxUid).set("");
   }
 
   const BacktoM = async() => {
     console.log('UNSUB firebase');
     queueDt.off();
     Pregame.off();
-    await database().ref(`/Queue/${route.params.UID}`).remove();
+    await database().ref(`/Queue/${reduxUid}`).remove();
     navigation.navigate("LogIn");
 
   }
@@ -29,7 +31,7 @@ function MatchMaking({route, navigation}){
     )
   }
 
-  const queueDt = database().ref(`/Queue/${route.params.UID}`);
+  const queueDt = database().ref(`/Queue/${reduxUid}`);
         
         queueDt.on('value', snapshot => {
             //มีการเปลี่ยนค่า
@@ -51,7 +53,7 @@ function MatchMaking({route, navigation}){
           let playerEnemy = ""; 
           console.log(snapshot.val()[roomID])
           for (let [key, values] of Object.entries(snapshot.val()[roomID].players)) {
-            if (key == route.params.UID){
+            if (key == reduxUid){
                 playerUser = values.UID
             }
             else {
@@ -59,9 +61,9 @@ function MatchMaking({route, navigation}){
             }
           }
           setTimeout(async () => {
-            await database().ref(`/Queue/${route.params.UID}`).remove();
+            await database().ref(`/Queue/${reduxUid}`).remove();
             console.log('UNSUB firebase');
-            navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID, player01: playerUser, player02: playerEnemy})
+            navigation.navigate("PlayRoom", {UID: reduxUid, roomID: roomID, player01: playerUser, player02: playerEnemy})
           }, 3000)
         }
       })

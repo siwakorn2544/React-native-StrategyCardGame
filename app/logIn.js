@@ -9,11 +9,23 @@ import {
 } from '@react-native-community/google-signin';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import auth from '@react-native-firebase/auth';
+import { useSelector, useDispatch } from "react-redux";
+import { setuser } from './redux/userAction';
 
 
-function App ({ navigation }) {
+function App ({ navigation, route }) {
+  const dispatch = useDispatch();
+  // dispatch( setuser( "IT-KMITL" ) );
   const [loggedIn, setloggedIn] = useState(false);
   const [user, setUser] = useState([]);
+  if(route.params){
+    if(user.uid == route.params.haveplayed){
+      alert("YOU LOSE")
+    }else{
+      alert("YOU WIN")
+    }
+    console.log(route)
+  }
 // ---------SignIN-----------
   const _signIn = async () => {
     console.log('Start SignIn . . .');
@@ -70,7 +82,8 @@ function App ({ navigation }) {
       await createUser(user.uid, user.displayName);
     }
     // await _storeData()
-    await navigation.navigate('Main', {UID: user.uid, image: user.photoURL});
+    dispatch( setuser( user.displayName, user.uid, user.photoURL ) );
+    await navigation.navigate('Main');
   }
 
   useEffect(() => {
