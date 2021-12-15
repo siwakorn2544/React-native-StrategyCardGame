@@ -179,11 +179,6 @@ function PlayRoom({route, navigation}) {
         setPhase(0);
         setTextPhase('Draw Phase');
         setBtColor('green');
-        await database()
-          .ref(
-            `PlayRoom/${route.params.roomID}/players/${route.params.player01}/Mana`,
-          )
-          .set(Player01.MaxMana);
       } else {
         setTextPhase('Enemy Turn');
         setBtColor('black');
@@ -435,6 +430,9 @@ function PlayRoom({route, navigation}) {
           var newmax = Player01.MaxMana + 1;
           await database()
             .ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/MaxMana`)
+            .set(newmax);
+          await database()
+            .ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/Mana`)
             .set(newmax);
         }
       }
