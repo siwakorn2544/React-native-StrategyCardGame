@@ -442,7 +442,7 @@ function PlayRoom({route, navigation}) {
   };
 
   const summonCard = async (classSelect, img, index, atk, hp, cost) => {
-    if(Player01.Field.length > 5){
+    if(Player01.Field.length < 5){
     if (Turn == UID_01 && Phase == 1) {
       if (Player01.Mana >= cost) {
         var player = Player01;
