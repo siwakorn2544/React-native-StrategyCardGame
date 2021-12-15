@@ -5,7 +5,6 @@ import Main from './main';
 import MatchMaking from './matchMaking';
 import PlayRoom from './playRoom';
 import Testing from "./test";
-import TestRedux from './Testredux'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createStore, combineReducers } from "redux";
@@ -39,7 +38,6 @@ function MyApp() {
         <Stack.Screen name="DeckC" component={DeckCreate} />
         <Stack.Screen name="MatchMaking" component={MatchMaking} />
         <Stack.Screen name="PlayRoom" component={PlayRoom} />
-        <Stack.Screen name="TestRedux" component={TestRedux} />
       </Stack.Navigator>
     </NavigationContainer></Provider>
   );

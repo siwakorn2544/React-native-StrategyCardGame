@@ -39,41 +39,7 @@ function PlayRoom({route, navigation}) {
 
   //firebase subscriber
   const playRoom = database().ref(`/PlayRoom`);
-  const Deck01 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player01}/Deck`,
-  );
-  const Name01 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player01}/name`,
-  );
-  const Name02 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player02}/name`,
-  );
-  const MaxMana01 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player01}/MaxMana`,
-  );
   const TurnData = database().ref(`PlayRoom/${route.params.roomID}/Turn`);
-  const Mana01 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player01}/Mana`,
-  );
-  const Field01 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player01}/Field`,
-  );
-  const Field02 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player02}/Field`,
-  );
-  const Hand01 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player01}/Hand`,
-  );
-  const Hand02 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player02}/Hand`,
-  );
-  const Lifepoint01 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player01}/LifePoint`,
-  );
-  const Lifepoint02 = database().ref(
-    `PlayRoom/${route.params.roomID}/players/${route.params.player02}/LifePoint`,
-  );
-  const subcon = database().ref(`PlayRoom/${route.params.roomID}/Conclusion`);
 
   //force Update
   const [, forceUpdate] = useReducer(x => x + 1, 0);
@@ -162,6 +128,11 @@ function PlayRoom({route, navigation}) {
 
     const onGameEnd = database().ref(`PlayRoom/${route.params.roomID}/Conclusion`).on('value', snapshot => {
           if(snapshot.val() != ""){
+            database().ref(`PlayRoom/${route.params.roomID}/players/${route.params.player01}`).off('value', onValueChange1);
+            database().ref(`PlayRoom/${route.params.roomID}/players/${route.params.player02}`).off('value', onValueChange2);
+            database().ref(`PlayRoom/${route.params.roomID}/Conclusion`).off('value', onGameEnd);
+            playRoom.off('value', room)
+            TurnData.off('value', onTurnchange);
               console.log("Test:"+snapshot.val())
               navigation.navigate("LogIn", {"haveplayed": snapshot.val()});
           }
@@ -201,7 +172,10 @@ function PlayRoom({route, navigation}) {
     // });
 
     const onTurnchange = TurnData.on('value', async snapshot => {
+      console.log('Turn: ', snapshot.val());
+      setTurn(snapshot.val());
       if (snapshot.val() == route.params.player01) {
+        console.log("TURNNNNN",snapshot.val(),route.params.player01)
         setPhase(0);
         setTextPhase('Draw Phase');
         setBtColor('green');
@@ -214,8 +188,8 @@ function PlayRoom({route, navigation}) {
         setTextPhase('Enemy Turn');
         setBtColor('black');
       }
-      console.log('Turn: ', snapshot.val());
-      setTurn(snapshot.val());
+      
+      
     });
 
     // Mana01.on('value', snapshot => {
@@ -506,6 +480,7 @@ function PlayRoom({route, navigation}) {
         }
       }
     } else {
+      console.log("P&T",Phase, Turn)
       alert("you can't summon this phase!");
     }
   };
