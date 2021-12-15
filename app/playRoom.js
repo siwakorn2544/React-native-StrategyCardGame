@@ -442,6 +442,7 @@ function PlayRoom({route, navigation}) {
   };
 
   const summonCard = async (classSelect, img, index, atk, hp, cost) => {
+    if(Player01.Field.length > 5){
     if (Turn == UID_01 && Phase == 1) {
       if (Player01.Mana >= cost) {
         var player = Player01;
@@ -480,8 +481,9 @@ function PlayRoom({route, navigation}) {
         }
       }
     } else {
-      console.log("P&T",Phase, Turn)
-      alert("you can't summon this phase!");
+      alert("You can't summon this phase!");
+    }}else{
+      alert("You can only have 4 monsters on field.")
     }
   };
 
