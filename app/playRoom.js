@@ -435,6 +435,7 @@ function PlayRoom({route, navigation}) {
             .ref(`/PlayRoom/${route.params.roomID}/players/${UID_01}/Mana`)
             .set(newmax);
         }
+        setFieldColor([0, 0, 0, 0, 0]);
       }
     }
   };
@@ -504,7 +505,7 @@ function PlayRoom({route, navigation}) {
             var isHaveDefender = Player02.Field.some(
               u => u.class == 'Defender',
             );
-            var newColorfield = [0, 0, 0, 0, 0];
+            var newColorfield = [0, 0, 0, 0, 0]; 
             for (let i = 1; i < Player02.Field.length; i++) {
               if (
                 !isHaveDefender ||
