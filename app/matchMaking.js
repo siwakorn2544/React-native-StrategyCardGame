@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button, Text, View, StyleSheet,ImageBackground, Image,TouchableOpacity} from "react-native";
 import { database } from './database/db';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { useSelector } from "react-redux";
 
 function MatchMaking({route, navigation}){
-  const reduxUid = useSelector( (state) => state.user.uid );
   const [Loading, setLoading] = useState("");
   const [findRoom, setFinding] = useState(false);
   const [myQueue, setMyQueue] = useState("");
@@ -13,14 +11,13 @@ function MatchMaking({route, navigation}){
   const [roomID, setRoomID] = useState("")
 
   const addData  = async () => {
-    await database().ref(`/Queue`).child(reduxUid).set("");
+    await database().ref(`/Queue`).child(route.params.UID).set("");
   }
 
   const BacktoM = async() => {
     console.log('UNSUB firebase');
-    queueDt.off();
-    Pregame.off();
-    await database().ref(`/Queue/${reduxUid}`).remove();
+    await queueDt.off();
+    await Pregame.off();
     navigation.navigate("LogIn");
 
   }
@@ -31,7 +28,7 @@ function MatchMaking({route, navigation}){
     )
   }
 
-  const queueDt = database().ref(`/Queue/${reduxUid}`);
+  const queueDt = database().ref(`/Queue/${route.params.UID}`);
         
         queueDt.on('value', snapshot => {
             //มีการเปลี่ยนค่า
@@ -46,30 +43,18 @@ function MatchMaking({route, navigation}){
   const Pregame = database().ref(`/PlayRoom`);
       
       Pregame.on('value', snapshot => {
-        if(roomID in snapshot.val()){
-          queueDt.off();
-          Pregame.off();
-          let playerUser = "";
-          let playerEnemy = ""; 
-          console.log(snapshot.val()[roomID])
-          for (let [key, values] of Object.entries(snapshot.val()[roomID].players)) {
-            if (key == reduxUid){
-                playerUser = values.UID
-            }
-            else {
-                playerEnemy = values.UID
-            }
-          }
-          setTimeout(async () => {
-            await database().ref(`/Queue/${reduxUid}`).remove();
-            console.log('UNSUB firebase');
-            navigation.navigate("PlayRoom", {UID: reduxUid, roomID: roomID, player01: playerUser, player02: playerEnemy})
-          }, 3000)
-        }
+        if(roomID in snapshot.val())
+
+        setTimeout(async () => {
+          await database().ref(`/Queue/${route.params.UID}`).remove();
+          navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
+          await database().ref(`/Queue/${route.params.UID}`).remove();
+        }, 3000)
       })
 
   useEffect( ()=> {
     addData();
+    // subscibeQueue();
   },[])
 
   return (
@@ -143,4 +128,3 @@ const styles = StyleSheet.create({
 })
 
 export default MatchMaking;
-
