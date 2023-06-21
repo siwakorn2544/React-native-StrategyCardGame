@@ -1,3 +1,10 @@
+# React native
+React-Native-Strategy-Card-Game
+
+### Orignal [react-native-Strategy-Card-Game](https://github.com/piyanatnine/react-native-Strategy-Card-Game)
+> In this project I was it62070180
+
+
 ```bash
  npm install @react-native-firebase/storage
  npm install react-native-modal
