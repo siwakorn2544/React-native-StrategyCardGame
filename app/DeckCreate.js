@@ -64,6 +64,9 @@ function Screen({route, navigation}) {
         }}
       />)
     }
+    const BacktoMain = ()=> {
+      navigation.navigate('Main')
+    }
 
     const _retrieveCardLists = async() => {
       let cardURL = await getCardLists();
@@ -102,12 +105,18 @@ function Screen({route, navigation}) {
         setDeck(route.params.DECK);
       }
       _retrieveCardLists();
+      return function cleanup() {
+        mounted = false
+    } 
     }
     ,[])
 
     useEffect(() =>{
       _retrieveCardInDeck(Deck, route.params.DECK);
       setCardCount(Deck.length);
+      return function cleanup() {
+        mounted = false
+    }
     },[Deck])
 
     const BackIcon = () => {
@@ -115,6 +124,9 @@ function Screen({route, navigation}) {
         <Icon name="keyboard-return" size={25} color="black"> </Icon>
       )
     }
+    // useEffect(()=>{
+ 
+    // },[])
 
     return (
       <View style={{
@@ -125,7 +137,7 @@ function Screen({route, navigation}) {
           onLayout = {(event) => setDeckZoneLocations(event)} 
           style={styles.selectDeck}>
                 <TouchableOpacity  
-                  onPress={() => navigation.navigate('Main')}
+                  onPress={BacktoMain}
                     style={styles.ViewText} 
                 >
                   <Text>Back</Text>

@@ -48,13 +48,15 @@ function MatchMaking({route, navigation}){
         setTimeout(async () => {
           await database().ref(`/Queue/${route.params.UID}`).remove();
           navigation.navigate("PlayRoom", {UID: route.params.UID, roomID: roomID})
-          await database().ref(`/Queue/${route.params.UID}`).remove();
         }, 3000)
       })
 
   useEffect( ()=> {
     addData();
     // subscibeQueue();
+    return function cleanup() {
+      mounted = false
+  }
   },[])
 
   return (

@@ -87,6 +87,9 @@ function Screen({route , navigation}) {
     }
     useEffect(() => {
       _retrieveData();
+    //   return function cleanup() {
+    //     mounted = false
+    // }
     }, [])
   
     // useEffect(() => {
