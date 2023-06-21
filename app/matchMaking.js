@@ -14,11 +14,6 @@ function MatchMaking({route, navigation}){
     await database().ref(`/Queue`).child(route.params.UID).set("");
   }
 
-  const subscibeQueue = async () => {
-    
-  
-  
-  }
   const BacktoM = async() => {
     console.log('UNSUB firebase');
     await queueDt.off();

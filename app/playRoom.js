@@ -580,7 +580,7 @@ function PlayRoom({route , navigation}){
                         <FlatList
                         data={Player02.Field}
                         renderItem={fieldEnemy}
-                        numColumns={5}
+                        numColumns={6}
                         keyExtractor={(item, index) => {item.imgURL+"-"+index}}
                         />
                     }
@@ -599,7 +599,7 @@ function PlayRoom({route , navigation}){
                     <FlatList
                       data={Player01.Field}
                       renderItem={fieldUser}
-                      numColumns={5}
+                      numColumns={6}
                       keyExtractor={(item, index) => {item.imgURL+"-"+index}}
                     />
                    }
@@ -682,7 +682,7 @@ function PlayRoom({route , navigation}){
       lifepoint: {
         position: "absolute",
         left: 56,
-        top: 66,
+        top: 59,
         fontWeight: "bold",
         fontSize: 16,
         color: "red"
