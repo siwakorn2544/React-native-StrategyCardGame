@@ -8,8 +8,15 @@ import Icon2 from 'react-native-vector-icons/FontAwesome5'
 import Icon3 from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon4 from 'react-native-vector-icons/MaterialIcons'
 import { get } from 'react-native/Libraries/Utilities/PixelRatio';
+import { useSelector, useDispatch } from "react-redux";
+import { setdeck } from './redux/userAction';
 
 function Screen({route , navigation}) {
+    const dispatch = useDispatch();
+    const reduxName = useSelector( (state) => state.user.name );
+    const reduxUid = useSelector( (state) => state.user.uid );
+    const reduxImg = useSelector( (state) => state.user.imgURL );
+    const reduxDeck = useSelector( (state) => state.user.deck );
     const [myDeck, setDeck] = useState([]);
     const [Name, setName] = useState("");
     const [UID, setUID] = useState("");
@@ -20,27 +27,22 @@ function Screen({route , navigation}) {
 
     const _retrieveData = async () => {
       try {
-        //GET DATA
-        const value = route.params.UID;
-        const image = route.params.image
-        const name = await _receiveName(value);
-        await _getDeck(value)
+        await _getDeck(reduxUid)
         //SET DATA
-        setUID(value);
-        setName(name);
-        setImg(image);
-        
-        // console.log(image, name, deck);
+        setUID(reduxUid);
+        setName(reduxName);
+        setImg(reduxImg);
       } catch (error) {
         // Error retrieving data
-        console.log('error')
+        console.log(error)
       }
       
     }
 
     const _getDeck = async (value) => {
       const deck = await _receiveDeckData(value);
-      console.log(deck.length)
+      console.log(deck)
+      dispatch(setdeck(deck))
       setDeck(deck);
       return deck
     }
@@ -54,7 +56,7 @@ function Screen({route , navigation}) {
 
     const GoToDeckCreate = async() => {
       const deck = await _getDeck(UID);
-      navigation.navigate('DeckC', {UID: UID ,DECK: deck})
+      navigation.navigate('DeckC')
     }
     const MyXicon = () => {
       return(
@@ -91,25 +93,6 @@ function Screen({route , navigation}) {
     //     mounted = false
     // }
     }, [])
-  
-    // useEffect(() => {
-    //   let interval = null;
-    //   if (matchMaking) {
-    //     interval = setInterval(
-    //         () => {
-    //             setCardChecking(cardChecking => cardChecking+1);
-    //         }
-    //     , 20);
-    // } else if (!matchMaking && cardChecking !== 0) {
-    //     clearInterval(interval);
-    //     setCardChecking(0);
-    // }
-
-    // if (cardChecking == myDeck.length || cardChecking == 40){
-    //   clearInterval(interval);
-    // }
-    // return () => clearInterval(interval);
-    // }, [matchMaking, cardChecking])
   
     return ( 
         <View style={{flex:1}}>
@@ -162,13 +145,11 @@ function Screen({route , navigation}) {
           </View>
           <View style={{flexDirection:"row", justifyContent:"space-evenly", alignItems:"center"}}>
               <TouchableOpacity style={styles.cancelinPlay} onPress={ () => setMatchMaking(false) }>
-                 <Text style={{color:"white"}}> cancal </Text>
+                 <Text style={{color:"white"}}> cancel </Text>
               </TouchableOpacity>
               {(cardChecking == _Deck.maxDeck()) &&
               <TouchableOpacity style={styles.findRoom} onPress={ 
-                () => navigation.navigate("MatchMaking", {
-                  UID: UID,
-                })
+                () => navigation.navigate("MatchMaking")
                 } 
               >
                 <Text style={{color:"white"}}>

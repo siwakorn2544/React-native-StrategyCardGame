@@ -4,8 +4,14 @@ import CardItem from './component/CardItem';
 import DeckSelect from './component/DeckSelect'
 import { Button, SafeAreaView, StyleSheet, Text, View, FlatList, ScrollView, TouchableOpacity,ImageBackground} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { useSelector, useDispatch } from "react-redux";
+import { setdeck } from './redux/userAction';
 
 function Screen({route, navigation}) {
+    const reduxUid = useSelector( (state) => state.user.uid );
+    const reduxDeck = useSelector( (state) => state.user.deck );
+    const reduxData = useSelector( (state) => state.user );
+    const dispatch = useDispatch()
     const [Deck, setDeck] = useState([]);
     const [CardLists, setCardLists] = useState([]);
     const [dropZoneValues, setDropzone] = useState();
@@ -86,7 +92,8 @@ function Screen({route, navigation}) {
     }
 
     const saveDeck = () => {
-      _saveDataDeck(route.params.UID, Deck);
+      _saveDataDeck(reduxUid, Deck);
+      dispatch(setdeck(Deck))
       alert("SAVE DECK!")
     }
 
@@ -101,8 +108,8 @@ function Screen({route, navigation}) {
     }
 
     useEffect(() => {
-      if (route.params.DECK != null){
-        setDeck(route.params.DECK);
+      if (reduxDeck != null){
+        setDeck(reduxDeck);
       }
       _retrieveCardLists();
       return function cleanup() {
@@ -112,7 +119,7 @@ function Screen({route, navigation}) {
     ,[])
 
     useEffect(() =>{
-      _retrieveCardInDeck(Deck, route.params.DECK);
+      _retrieveCardInDeck(Deck, reduxDeck);
       setCardCount(Deck.length);
       return function cleanup() {
         mounted = false

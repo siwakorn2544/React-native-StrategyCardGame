@@ -9,12 +9,24 @@ import {
 } from '@react-native-community/google-signin';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import auth from '@react-native-firebase/auth';
+import { useSelector, useDispatch } from "react-redux";
+import { setuser } from './redux/userAction';
 
 
-function App ({ navigation }) {
+function App ({ navigation, route }) {
+  const dispatch = useDispatch();
+  // dispatch( setuser( "IT-KMITL" ) );
   const [loggedIn, setloggedIn] = useState(false);
   const [user, setUser] = useState([]);
-
+  if(route.params){
+    if(user.uid == route.params.haveplayed){
+      alert("YOU LOSE")
+    }else{
+      alert("YOU WIN")
+    }
+    console.log(route)
+  }
+// ---------SignIN-----------
   const _signIn = async () => {
     console.log('Start SignIn . . .');
     try {
@@ -43,11 +55,12 @@ function App ({ navigation }) {
       }
     }
   };
+  // ---------SignIN-----------
   function onAuthStateChanged(user) {
     setUser(user);
     if (user) setloggedIn(true);
   }
-
+// ---------SignOUT-----------
   const signOut = async () => {
     try {
       await GoogleSignin.revokeAccess();
@@ -61,15 +74,16 @@ function App ({ navigation }) {
       console.error(error);
     }
   };
-
+// ---------SignOUT-----------
   const checkData_User = async () => {
     let exists = await dataCheck(user.uid);
     if (!exists){
       //create new player
-      await createUser(user.uid, user.displayName); 
+      await createUser(user.uid, user.displayName);
     }
     // await _storeData()
-    await navigation.navigate('Main', {UID: user.uid, image: user.photoURL});
+    dispatch( setuser( user.displayName, user.uid, user.photoURL ) );
+    await navigation.navigate('Main');
   }
 
   useEffect(() => {
@@ -86,11 +100,10 @@ function App ({ navigation }) {
 
   return (
     <View style={styles.bg}>
-      {/* <Image style={styles.imageBG} source={imageURL} resizeMode="cover"></Image> */}
-      {/* <ImageBackground source={imageURL} style={styles.imageBG}> */}
       <ImageBackground source={require('./assets/imggif/2.gif')} resizeMode="cover" style={styles.imageBG}>
           <View style={styles.body}>
             <View >
+              {/* Google SignIn */}
               <View style={styles.sectionContainer}>
                 {!loggedIn && (
                   <GoogleSigninButton
@@ -100,7 +113,8 @@ function App ({ navigation }) {
                     onPress={_signIn}
                   />
                 )}
-              </View>            
+              </View>           
+               {/* Google SignIn */}
               <View style={styles.buttonContainer}>
                 {!user}
                 {user && (
